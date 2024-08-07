@@ -1,11 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
     const info = document.getElementById('info');
     const map = document.getElementById('map');
+    const closeButton = document.getElementById('close-btn');
     const dockDistance = 70; // Distance from the edge to consider docking
 
     // Function to show the info window
     window.showInfo = () => {
         info.style.display = 'block';
+    };
+
+    // Function to hide the info window
+    const hideInfo = () => {
+        info.style.display = 'none';
     };
 
     // Variables to track dragging
@@ -76,6 +82,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             isDragging = false;
             info.style.cursor = 'move';
+        }
+    });
+
+    // Event listener for the close button
+    closeButton.addEventListener('click', hideInfo);
+
+    // Event listener to show info window when clicking the map
+    map.addEventListener('click', () => {
+        if (info.style.display === 'none') {
+            window.showInfo();
         }
     });
 });
