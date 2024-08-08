@@ -2,16 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const info = document.getElementById('info');
     const map = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
+    const tooltip = document.getElementById('tooltip');
     const dockDistance = 70; // Distance from the edge to consider docking
 
     // Function to show the info window
     window.showInfo = () => {
         info.style.display = 'block';
+        tooltip.style.display = 'none'; // Hide tooltip when info is displayed
     };
 
     // Function to hide the info window
     const hideInfo = () => {
         info.style.display = 'none';
+        tooltip.style.display = 'block'; // Show tooltip when info is hidden
     };
 
     // Variables to track dragging
