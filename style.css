@@ -156,3 +156,7 @@ body {
         transform: scale(1);
     }
 }
+
+.no-animations .top img {
+    animation: none;
+}

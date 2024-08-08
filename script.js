@@ -2,22 +2,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const info = document.getElementById('info');
     const map = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
-    const tooltip = document.getElementById('tooltip');
-    const dockDistance = 70; // Distance from the edge to consider docking
+    const tooltip = document.querySelector('.tooltip');
+    const body = document.body;
+    const dockDistance = 70;
 
-    // Function to show the info window
     window.showInfo = () => {
         info.style.display = 'block';
-        tooltip.style.display = 'none'; // Hide tooltip when info is displayed
+        tooltip.style.display = 'none';
+        body.classList.add('no-animations');
     };
 
-    // Function to hide the info window
     const hideInfo = () => {
         info.style.display = 'none';
-        tooltip.style.display = 'block'; // Show tooltip when info is hidden
+        tooltip.style.display = 'block';
+        body.classList.remove('no-animations');
     };
 
-    // Variables to track dragging
     let isDragging = false;
     let startX, startY, initialX, initialY;
 
@@ -38,13 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const newTop = initialY + dy;
             const viewportWidth = window.innerWidth;
             const viewportHeight = window.innerHeight;
-
-            // Update position while keeping the info window within the viewport
             const infoRect = info.getBoundingClientRect();
             const newRight = newLeft + infoRect.width;
             const newBottom = newTop + infoRect.height;
 
-            // Ensure info window stays within the viewport
             if (newLeft < 0) {
                 info.style.left = '0px';
             } else if (newRight > viewportWidth) {
@@ -65,12 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('mouseup', () => {
         if (isDragging) {
-            // Check for docking
             const infoRect = info.getBoundingClientRect();
             const viewportWidth = window.innerWidth;
             const viewportHeight = window.innerHeight;
 
-            // Dock to edges if close enough
             if (infoRect.left < dockDistance) {
                 info.style.left = '0px';
             } else if (viewportWidth - infoRect.right < dockDistance) {
@@ -88,10 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Event listener for the close button
     closeButton.addEventListener('click', hideInfo);
 
-    // Event listener to show info window when clicking the map
     map.addEventListener('click', () => {
         if (info.style.display === 'none') {
             window.showInfo();
