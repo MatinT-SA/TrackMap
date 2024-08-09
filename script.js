@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+
+    /***** Selecting DOM elements ********/
     const info = document.getElementById('info');
     const map = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
@@ -90,4 +92,18 @@ document.addEventListener('DOMContentLoaded', () => {
             window.showInfo();
         }
     });
+
+    /***** Geolocation ********/
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const { latitude } = position.coords;
+            const { longitude } = position.coords;
+            console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+        }, function () {
+            alert('Could not get your current location');
+        })
+    }
+
+
+
 });
