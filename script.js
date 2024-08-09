@@ -99,6 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const { latitude } = position.coords;
             const { longitude } = position.coords;
             console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+
+            const coords = [latitude, longitude];
+
+            const map = L.map('map').setView(coords, 14);
+
+            L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+                maxZoom: 20,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
+            }).addTo(map);
+
+
+            L.marker(coords).addTo(map)
+                .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                .openPopup();
         }, function () {
             alert('Could not get your current location');
         })
