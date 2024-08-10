@@ -109,11 +109,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }).addTo(map);
 
             map.on('click', function (mapEvent) {
-                console.log(mapEvent);
                 const { lat, lng } = mapEvent.latlng;
 
-                L.marker([lat, lng]).addTo(map)
-                    .bindPopup('Workout')
+                L.marker([lat, lng], { riseOnHover: true }).addTo(map)
+                    .bindPopup(L.popup({
+                        maxWidth: 300,
+                        minWidth: 150,
+                        autoClose: false,
+                        closeOnClick: false,
+                        className: 'running-popup'
+                    }))
                     .openPopup();
             })
 
