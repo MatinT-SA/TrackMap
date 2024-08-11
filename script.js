@@ -12,14 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let map; // Define map variable outside to access it globally
 
     window.showInfo = () => {
-        info.style.display = 'block';
+        info.classList.add('show');
         tooltip.style.display = 'none';
         body.classList.add('no-animations');
         isInfoVisible = true;
     };
 
     const hideInfo = () => {
-        info.style.display = 'none';
+        info.classList.remove('show');
         tooltip.style.display = 'block';
         body.classList.remove('no-animations');
         isInfoVisible = false;
