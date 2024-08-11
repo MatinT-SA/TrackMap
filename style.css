@@ -203,8 +203,7 @@ body {
 .leaflet-popup .leaflet-popup-content-wrapper {
     background-color: var(--color-dark-first);
     color: var(--color-light-first);
-    border-radius: 5px;
-    padding-right: 0.6rem;
+    border-radius: 12px;
 }
 
 .leaflet-popup .leaflet-popup-content {
