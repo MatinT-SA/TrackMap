@@ -2,22 +2,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /***** Selecting DOM elements ********/
     const info = document.getElementById('info');
-    const map = document.getElementById('map');
+    const mapElement = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
     const tooltip = document.querySelector('.tooltip');
     const body = document.body;
     const dockDistance = 70;
 
+    let isInfoVisible = false;
+    let map; // Define map variable outside to access it globally
+
     window.showInfo = () => {
         info.style.display = 'block';
         tooltip.style.display = 'none';
         body.classList.add('no-animations');
+        isInfoVisible = true;
     };
 
     const hideInfo = () => {
         info.style.display = 'none';
         tooltip.style.display = 'block';
         body.classList.remove('no-animations');
+        isInfoVisible = false;
     };
 
     let isDragging = false;
@@ -87,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     closeButton.addEventListener('click', hideInfo);
 
-    map.addEventListener('click', () => {
-        if (info.style.display === 'none') {
+    mapElement.addEventListener('click', () => {
+        if (!isInfoVisible) {
             window.showInfo();
         }
     });
@@ -101,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const coords = [latitude, longitude];
 
-            const map = L.map('map').setView(coords, 14);
+            map = L.map('map').setView(coords, 14);
 
             L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
                 maxZoom: 20,
@@ -109,26 +114,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }).addTo(map);
 
             map.on('click', function (mapEvent) {
-                const { lat, lng } = mapEvent.latlng;
+                if (isInfoVisible) { // Check if info is visible
+                    const { lat, lng } = mapEvent.latlng;
 
-                L.marker([lat, lng], { riseOnHover: true }).addTo(map)
-                    .bindPopup(L.popup({
-                        maxWidth: 300,
-                        minWidth: 150,
-                        autoClose: false,
-                        closeOnClick: false,
-                        className: 'running-popup'
-                    }))
-                    .openPopup();
-            })
-
-
-
+                    L.marker([lat, lng], { riseOnHover: true }).addTo(map)
+                        .bindPopup(L.popup({
+                            maxWidth: 300,
+                            minWidth: 150,
+                            autoClose: false,
+                            closeOnClick: false,
+                            className: 'running-popup'
+                        }))
+                        .setPopupContent('Workout')
+                        .openPopup();
+                }
+            });
         }, function () {
             alert('Could not get your current location');
-        })
+        });
     }
-
-
 
 });
