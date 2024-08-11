@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const tooltip = document.querySelector('.tooltip');
     const body = document.body;
     const dockDistance = 70;
+    const form = document.querySelector('.form');
     const inputs = document.querySelectorAll('.form__input');
     const inputType = document.querySelector('.form__input--type');
     const inputDistance = document.querySelector('.form__input--distance');
@@ -16,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputElevation = document.querySelector('.form__input--elevation');
 
     let isInfoVisible = false;
-    let map;
+    let map, mapEvent;
 
     window.showInfo = () => {
         info.classList.add('show');
@@ -121,25 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
             }).addTo(map);
 
-            map.on('click', function (mapEvent) {
-                if (isInfoVisible) {
-                    const { lat, lng } = mapEvent.latlng;
+            map.on('click', function (mapE) {
+                mapEvent = mapE;
 
-                    L.marker([lat, lng], { riseOnHover: true }).addTo(map)
-                        .bindPopup(L.popup({
-                            maxWidth: 300,
-                            minWidth: 150,
-                            autoClose: false,
-                            closeOnClick: false,
-                            className: 'running-popup'
-                        }))
-                        .setPopupContent('Workout')
-                        .openPopup();
-
-                    setTimeout(() => {
-                        inputDistance.focus();
-                    }, 100);
-                }
+                setTimeout(() => {
+                    inputDistance.focus();
+                }, 100);
             });
         }, function () {
             alert('Could not get your current location');
@@ -157,5 +145,31 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
         });
     });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
+
+        if (isInfoVisible) {
+            const { lat, lng } = mapEvent.latlng;
+
+            L.marker([lat, lng], { riseOnHover: true }).addTo(map)
+                .bindPopup(L.popup({
+                    maxWidth: 300,
+                    minWidth: 150,
+                    autoClose: false,
+                    closeOnClick: false,
+                    className: 'running-popup'
+                }))
+                .setPopupContent('Workout')
+                .openPopup();
+        }
+    })
+
+    inputType.addEventListener('change', function () {
+        inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+        inputPace.closest('.form__row').classList.toggle('form__row--hidden');
+    })
 
 });
