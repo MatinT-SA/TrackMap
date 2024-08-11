@@ -9,6 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
     const dockDistance = 70;
     const inputs = document.querySelectorAll('.form__input');
+    const inputType = document.querySelector('.form__input--type');
+    const inputDistance = document.querySelector('.form__input--distance');
+    const inputTime = document.querySelector('.form__input--time');
+    const inputPace = document.querySelector('.form__input--pace');
+    const inputElevation = document.querySelector('.form__input--elevation');
 
     let isInfoVisible = false;
     let map;
@@ -130,6 +135,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         }))
                         .setPopupContent('Workout')
                         .openPopup();
+
+                    setTimeout(() => {
+                        inputDistance.focus();
+                    }, 100);
                 }
             });
         }, function () {
