@@ -1,15 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     /***** Selecting DOM elements ********/
+
     const info = document.getElementById('info');
     const mapElement = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
     const tooltip = document.querySelector('.tooltip');
     const body = document.body;
     const dockDistance = 70;
+    const inputs = document.querySelectorAll('.form__input');
 
     let isInfoVisible = false;
-    let map; // Define map variable outside to access it globally
+    let map;
 
     window.showInfo = () => {
         info.classList.add('show');
@@ -99,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /***** Geolocation ********/
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             const { latitude } = position.coords;
@@ -114,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }).addTo(map);
 
             map.on('click', function (mapEvent) {
-                if (isInfoVisible) { // Check if info is visible
+                if (isInfoVisible) {
                     const { lat, lng } = mapEvent.latlng;
 
                     L.marker([lat, lng], { riseOnHover: true }).addTo(map)
@@ -133,5 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Could not get your current location');
         });
     }
+
+    /***** Form ********/
+
+    inputs.forEach(input => {
+        input.addEventListener('focus', (e) => {
+            e.target.closest('.form__row').querySelector('.form__label').classList.add('focused');
+        });
+
+        input.addEventListener('blur', (e) => {
+            e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
+        });
+    });
 
 });

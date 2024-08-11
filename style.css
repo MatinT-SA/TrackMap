@@ -18,6 +18,7 @@
     --color-orange-first: rgb(213, 148, 26);
     --color-green-second: rgb(15, 144, 26);
     --color-blue-logo: #98E0CB;
+    --color-blue-secondary: #c8eee2;
 }
 
 html {
@@ -173,6 +174,7 @@ body {
     flex: 0 0 47%;
     font-size: 1.4rem;
     font-weight: 600;
+    transition: font-size .3s;
 }
 
 .form__input {
@@ -183,18 +185,27 @@ body {
     border: none;
     border-radius: 5px;
     background-color: var(--color-blue-logo);
-    transition: all 0.3s ease-in-out;
+    transition: background-color 0.3s ease-in-out, outline .2s ease-in, transform .4s ease-out;
+}
+
+.form__input:hover {
+    background-color: var(--color-blue-secondary);
 }
 
 .form__input:focus {
-    outline: none;
+    outline: 2px ridge blue;
+    transform: translateX(3px);
     background-color: #fff;
+}
+
+.form__label.focused {
+    font-size: 1.6rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .form__btn {
     display: none;
 }
-
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
 /* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Leaflet ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
