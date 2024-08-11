@@ -1,15 +1,23 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     /***** Selecting DOM elements ********/
+
     const info = document.getElementById('info');
     const mapElement = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
     const tooltip = document.querySelector('.tooltip');
     const body = document.body;
     const dockDistance = 70;
+    const form = document.querySelector('.form');
+    const inputs = document.querySelectorAll('.form__input');
+    const inputType = document.querySelector('.form__input--type');
+    const inputDistance = document.querySelector('.form__input--distance');
+    const inputTime = document.querySelector('.form__input--time');
+    const inputPace = document.querySelector('.form__input--pace');
+    const inputElevation = document.querySelector('.form__input--elevation');
 
     let isInfoVisible = false;
-    let map; // Define map variable outside to access it globally
+    let map, mapEvent;
 
     window.showInfo = () => {
         info.classList.add('show');
@@ -99,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /***** Geolocation ********/
+
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
             const { latitude } = position.coords;
@@ -113,25 +122,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
             }).addTo(map);
 
-            map.on('click', function (mapEvent) {
-                if (isInfoVisible) { // Check if info is visible
-                    const { lat, lng } = mapEvent.latlng;
+            map.on('click', function (mapE) {
+                mapEvent = mapE;
 
-                    L.marker([lat, lng], { riseOnHover: true }).addTo(map)
-                        .bindPopup(L.popup({
-                            maxWidth: 300,
-                            minWidth: 150,
-                            autoClose: false,
-                            closeOnClick: false,
-                            className: 'running-popup'
-                        }))
-                        .setPopupContent('Workout')
-                        .openPopup();
-                }
+                setTimeout(() => {
+                    inputDistance.focus();
+                }, 100);
             });
         }, function () {
             alert('Could not get your current location');
         });
     }
+
+    /***** Form ********/
+
+    inputs.forEach(input => {
+        input.addEventListener('focus', (e) => {
+            e.target.closest('.form__row').querySelector('.form__label').classList.add('focused');
+        });
+
+        input.addEventListener('blur', (e) => {
+            e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
+        });
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
+
+        if (isInfoVisible) {
+            const { lat, lng } = mapEvent.latlng;
+
+            L.marker([lat, lng], { riseOnHover: true }).addTo(map)
+                .bindPopup(L.popup({
+                    maxWidth: 300,
+                    minWidth: 150,
+                    autoClose: false,
+                    closeOnClick: false,
+                    className: 'running-popup'
+                }))
+                .setPopupContent('Workout')
+                .openPopup();
+        }
+    })
+
+    inputType.addEventListener('change', function () {
+        inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+        inputPace.closest('.form__row').classList.toggle('form__row--hidden');
+    })
 
 });
