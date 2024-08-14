@@ -19,6 +19,59 @@ document.addEventListener('DOMContentLoaded', () => {
     let isInfoVisible = false;
     let map, mapEvent;
 
+    /***** Classes ********/
+
+    class App {
+        constructor() {
+            this._getPosition();
+        }
+
+        _getPosition() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(this._loadMap, function () {
+                    alert('Could not get your current location');
+                });
+            }
+
+        }
+
+        _loadMap(position) {
+            const { latitude } = position.coords;
+            const { longitude } = position.coords;
+
+            const coords = [latitude, longitude];
+
+            map = L.map('map').setView(coords, 14);
+
+            L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+                maxZoom: 20,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
+            }).addTo(map);
+
+            map.on('click', function (mapE) {
+                mapEvent = mapE;
+
+                setTimeout(() => {
+                    inputDistance.focus();
+                }, 100);
+            });
+        }
+
+        _showForm() {
+
+        }
+
+        _toggleElevationInput() {
+
+        }
+
+        _newWorkout() {
+
+        }
+    }
+
+    const app = new App();
+
     window.showInfo = () => {
         info.classList.add('show');
         tooltip.style.display = 'none';
@@ -108,31 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /***** Geolocation ********/
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            const { latitude } = position.coords;
-            const { longitude } = position.coords;
-
-            const coords = [latitude, longitude];
-
-            map = L.map('map').setView(coords, 14);
-
-            L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
-                maxZoom: 20,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
-            }).addTo(map);
-
-            map.on('click', function (mapE) {
-                mapEvent = mapE;
-
-                setTimeout(() => {
-                    inputDistance.focus();
-                }, 100);
-            });
-        }, function () {
-            alert('Could not get your current location');
-        });
-    }
 
     /***** Form ********/
 
