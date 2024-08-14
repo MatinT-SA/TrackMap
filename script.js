@@ -30,10 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             form.addEventListener('submit', this._newWorkout.bind(this));
 
-            inputType.addEventListener('change', function () {
-                inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
-                inputPace.closest('.form__row').classList.toggle('form__row--hidden');
-            })
+            inputType.addEventListener('change', this._toggleElevationInput);
         }
 
         _getPosition() {
@@ -70,7 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         _toggleElevationInput() {
-
+            inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+            inputPace.closest('.form__row').classList.toggle('form__row--hidden');
         }
 
         _newWorkout(e) {
