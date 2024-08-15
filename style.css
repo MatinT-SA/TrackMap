@@ -276,27 +276,25 @@ body {
 
 .error-container {
     position: fixed;
-    top: -50px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(255, 0, 0, 0.9);
+    top: 7rem;
+    right: 0;
+    background-color: rgba(255, 0, 0);
     color: white;
-    padding: 10px 20px;
+    padding: 1rem 2rem;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 1.8rem;
+    opacity: 0;
     z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.5s ease, opacity 0.5s ease;
+    box-shadow: 0 1px 10px 2px rgb(136, 4, 4);
+    transition: transform 0.5s ease-out, opacity .6s ease-in-out;
 }
 
-/* Animation class to show the error message */
 .error-container.show {
-    transform: translateX(-50%) translateY(70px);
+    transform: translateX(-10%);
     opacity: 1;
 }
 
-/* Animation class to hide the error message */
 .error-container.hide {
-    transform: translateX(-50%) translateY(-50px);
+    transform: translateX(50%);
     opacity: 0;
 }

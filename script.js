@@ -21,12 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /***** Error message function ********/
     function showError(message) {
-        const errorContainer = document.getElementById('error-container');
+        const errorContainer = document.querySelector('.error-container');
         errorContainer.innerText = message;
         errorContainer.classList.remove('hide');
         errorContainer.classList.add('show');
 
-        // Hide the error message after 3 seconds
         setTimeout(() => {
             errorContainer.classList.remove('show');
             errorContainer.classList.add('hide');
