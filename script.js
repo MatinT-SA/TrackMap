@@ -19,6 +19,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let isInfoVisible = false;
     let map, mapEvent;
 
+    /***** Error message function ********/
+    function showError(message) {
+        const errorContainer = document.getElementById('error-container');
+        errorContainer.innerText = message;
+        errorContainer.classList.remove('hide');
+        errorContainer.classList.add('show');
+
+        // Hide the error message after 3 seconds
+        setTimeout(() => {
+            errorContainer.classList.remove('show');
+            errorContainer.classList.add('hide');
+        }, 3000);
+    }
+
     /***** Classes ********/
 
     /***** Workout class ********/
@@ -26,35 +40,35 @@ document.addEventListener('DOMContentLoaded', () => {
         date = new Date();
         id = (Date.now() + '').slice(-10);
 
-        constructor(coords, distance, duration) {
+        constructor(coords, distance, time) {
             this.coords = coords;
             this.distance = distance;
-            this.duration = duration;
+            this.time = time;
         }
     }
 
     class Running extends Workout {
-        constructor(coords, distance, duration, pace) {
-            super(coords, distance, duration);
+        constructor(coords, distance, time, pace) {
+            super(coords, distance, time);
             this.pace = pace;
             this.calcPace();
         }
 
         calcPace() {
-            this.pace = this.duration / this.distance;
+            this.pace = this.time / this.distance;
             return this.pace;
         }
     }
 
     class Cycling extends Workout {
-        constructor(coords, distance, duration, elevationGain) {
-            super(coords, distance, duration);
+        constructor(coords, distance, time, elevationGain) {
+            super(coords, distance, time);
             this.elevationGain = elevationGain;
             this.calcSpeed();
         }
 
         calcSpeed() {
-            this.speed = this.distance / this.duration;
+            this.speed = this.distance / this.time;
             return this.speed;
         }
     }
@@ -76,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         _getPosition() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), function () {
-                    alert('Could not get your current location');
+                    return showError('Could not get your current position');
                 });
             }
 
@@ -113,6 +127,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         _newWorkout(e) {
             e.preventDefault();
+
+            const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp));
+            const positiveInputs = (...inputs) => inputs.every(inp => inp > 0);
+
+            const type = inputType.value;
+            const distance = +inputDistance.value;
+            const time = +inputTime.value;
+
+            if (type === 'running') {
+                const pace = +inputPace.value;
+
+                if (
+                    !validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)
+                ) {
+                    return showError('Please enter a valid number');
+                }
+            }
+
+            if (type === "cycling") {
+                const elevation = +inputElevation.value;
+
+                if (
+                    !validInputs(distance, time, elevation) || !positiveInputs(distance, time)
+                ) {
+                    return showError('Please enter a positive number');
+                }
+            }
 
             inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
 
