@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     class Running extends Workout {
+        type = 'running';
         constructor(coords, distance, time, pace) {
             super(coords, distance, time);
             this.pace = pace;
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     class Cycling extends Workout {
+        type = 'cycling'
         constructor(coords, distance, time, elevationGain) {
             super(coords, distance, time);
             this.elevationGain = elevationGain;
@@ -77,8 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     class App {
         #map;
         #mapEvent;
+        #workouts = [];
 
         constructor() {
+
             this._getPosition();
 
             form.addEventListener('submit', this._newWorkout.bind(this));
@@ -133,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const type = inputType.value;
             const distance = +inputDistance.value;
             const time = +inputTime.value;
+            const { lat, lng } = this.#mapEvent.latlng;
+            let workout;
 
             if (type === 'running') {
                 const pace = +inputPace.value;
@@ -140,8 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (
                     !validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)
                 ) {
-                    return showError('Please enter a valid number');
+                    return showError('Valid and positive numbers are allowed');
                 }
+
+                workout = new Running([lat, lng], distance, time, pace);
             }
 
             if (type === "cycling") {
@@ -150,22 +158,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (
                     !validInputs(distance, time, elevation) || !positiveInputs(distance, time)
                 ) {
-                    return showError('Please enter a positive number');
+                    return showError('Valid and positive numbers are allowed');
                 }
+
+                workout = new Cycling([lat, lng], distance, time, elevation);
             }
+
+            this.#workouts.push(workout);
 
             inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
 
-            if (isInfoVisible) {
-                const { lat, lng } = this.#mapEvent.latlng;
 
-                L.marker([lat, lng], { riseOnHover: true }).addTo(this.#map)
+            this.renderWorkoutMarer(workout);
+
+        }
+
+        renderWorkoutMarer(workout) {
+            if (isInfoVisible) {
+                L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
                     .bindPopup(L.popup({
                         maxWidth: 300,
                         minWidth: 150,
                         autoClose: false,
                         closeOnClick: false,
-                        className: 'running-popup'
+                        className: `${workout.type}-popup`
                     }))
                     .setPopupContent('Workout')
                     .openPopup();

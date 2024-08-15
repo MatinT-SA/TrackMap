@@ -15,7 +15,7 @@
     --color-dark-first: #313131;
     --color-light-first: #bebebe;
     --color-green-first: rgb(8, 119, 43);
-    --color-orange-first: rgb(213, 148, 26);
+    --color-purple-first: rgb(128, 22, 82);
     --color-green-second: rgb(15, 144, 26);
     --color-blue-logo: #98E0CB;
     --color-blue-secondary: #c8eee2;
@@ -231,7 +231,7 @@ body {
 }
 
 .cycling-popup .leaflet-popup-content-wrapper {
-    box-shadow: 0 0 7px 5px var(--color-orange-first);
+    box-shadow: 0 0 7px 5px var(--color-purple-first);
 }
 
 
