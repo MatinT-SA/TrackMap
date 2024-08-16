@@ -44,6 +44,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.distance = distance;
             this.time = time;
         }
+
+        _setDescription() {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
+        }
     }
 
     class Running extends Workout {
@@ -52,11 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
             super(coords, distance, time);
             this.pace = pace;
             this.calcPace();
+            this._setDescription();
         }
 
         calcPace() {
-            this.pace = this.time / this.distance;
-            return this.pace;
+            this.paceRunning = this.time / this.distance;
+            return this.paceRunning;
         }
     }
 
@@ -66,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             super(coords, distance, time);
             this.elevationGain = elevationGain;
             this.calcSpeed();
+            this._setDescription();
         }
 
         calcSpeed() {
@@ -82,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         #workouts = [];
 
         constructor() {
-
             this._getPosition();
 
             form.addEventListener('submit', this._newWorkout.bind(this));
@@ -168,12 +175,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
 
+            this._renderWorkout(workout);
 
-            this.renderWorkoutMarer(workout);
-
+            this._renderWorkoutMarker(workout);
         }
 
-        renderWorkoutMarer(workout) {
+        /***** Geolocation ********/
+        _renderWorkoutMarker(workout) {
             if (isInfoVisible) {
                 L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
                     .bindPopup(L.popup({
@@ -186,6 +194,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     .setPopupContent('Workout')
                     .openPopup();
             }
+        }
+
+        _renderWorkout(workout) {
+            let html = `
+                <li class="activity activity--${workout.type}" data-id="${workout.id}">
+                    <h2 class="activity__title">${workout.description}</h2>
+                    <div class="activity__details">
+                        <span class="activity__icon">${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}</span>
+                        <span class="activity__value">${workout.distance}</span>
+                        <span class="activity__unit">km</span>
+                    </div>
+                    <div class="activity__details">
+                        <span class="activity__icon">⏱</span>
+                        <span class="activity__value">${workout.time}</span>
+                        <span class="activity__unit">min</span>
+                    </div>
+            `;
+
+            if (workout.type === 'running')
+                html += `
+                <div class="activity__details">
+                    <span class="activity__icon">⚡️</span>
+                    <span class="activity__value">${workout.paceRunning.toFixed(1)}</span>
+                    <span class="activity__unit">min/km</span>
+                </div>
+                <div class="activity__details">
+                    <span class="activity__icon">🦶🏼</span>
+                    <span class="activity__value">${workout.pace}</span>
+                    <span class="activity__unit">spm</span>
+                </div>
+            </li>
+            `;
+
+            if (workout.type === 'cycling')
+                html += `
+                <div class="activity__details">
+                    <span class="activity__icon">⚡️</span>
+                    <span class="activity__value">${workout.speed.toFixed(1)}</span>
+                    <span class="activity__unit">km/h</span>
+                </div>
+                <div class="activity__details">
+                    <span class="activity__icon">⛰</span>
+                    <span class="activity__value">${workout.elevation}</span>
+                    <span class="activity__unit">m</span>
+                </div>
+            </li>
+            `;
+
+            form.insertAdjacentHTML('afterend', html);
         }
     }
 
@@ -278,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /***** Geolocation ********/
+
 
 
     /***** Form ********/

@@ -136,7 +136,7 @@ body {
 }
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
-/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Form ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
+/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Form ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
 
 .activities {
@@ -206,6 +206,59 @@ body {
 
 .form__btn {
     display: none;
+}
+
+/* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
+/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Form ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
+/* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
+
+.activity {
+    background-color: var(--color-green-second);
+    border-radius: 5px;
+    padding: 1.5rem 2.25rem;
+    margin-bottom: 1.75rem;
+    cursor: pointer;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0.75rem 1.5rem;
+}
+
+.activity--running {
+    border-left: 5px solid var(--color-green-first);
+}
+
+.activity--cycling {
+    border-left: 5px solid var(--color-purple-first);
+}
+
+.activity__title {
+    font-size: 1.7rem;
+    font-weight: 600;
+    grid-column: 1 / -1;
+}
+
+.activity__details {
+    display: flex;
+    align-items: baseline;
+}
+
+.activity__icon {
+    font-size: 1.8rem;
+    margin-right: 0.2rem;
+    height: 0.28rem;
+}
+
+.activity__value {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.activity__unit {
+    font-size: 1.1rem;
+    color: black;
+    text-transform: uppercase;
+    font-weight: 800;
 }
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
