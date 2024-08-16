@@ -103,6 +103,7 @@ body {
     border-radius: 1rem;
     z-index: 1000;
     padding: 1rem 3rem;
+    overflow-y: auto;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.3s ease-in, visibility 0.3s ease-in;
@@ -141,7 +142,7 @@ body {
 
 .activities {
     list-style: none;
-    height: 70vh;
+    height: auto;
     overflow-y: scroll;
     overflow-x: hidden;
     margin-top: 1rem;

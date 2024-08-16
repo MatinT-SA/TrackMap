@@ -91,9 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         constructor() {
             this._getPosition();
-
             form.addEventListener('submit', this._newWorkout.bind(this));
-
             inputType.addEventListener('change', this._toggleElevationInput);
         }
 
