@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="activity__details">
                     <span class="activity__icon">⛰</span>
-                    <span class="activity__value">${workout.elevation}</span>
+                    <span class="activity__value">${workout.elevationGain}</span>
                     <span class="activity__unit">m</span>
                 </div>
             </li>
