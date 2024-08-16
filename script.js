@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="activity__unit">km</span>
                     </div>
                     <div class="activity__details">
-                        <span class="activity__icon">⏱</span>
+                        <span class="activity__icon">⏳</span>
                         <span class="activity__value">${workout.time}</span>
                         <span class="activity__unit">min</span>
                     </div>
@@ -225,12 +225,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (workout.type === 'running')
                 html += `
                 <div class="activity__details">
-                    <span class="activity__icon">⚡️</span>
+                    <span class="activity__icon">🚀</span>
                     <span class="activity__value">${workout.paceRunning.toFixed(1)}</span>
                     <span class="activity__unit">min/km</span>
                 </div>
                 <div class="activity__details">
-                    <span class="activity__icon">🦶🏼</span>
+                    <span class="activity__icon">👣</span>
                     <span class="activity__value">${workout.pace}</span>
                     <span class="activity__unit">spm</span>
                 </div>
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (workout.type === 'cycling')
                 html += `
                 <div class="activity__details">
-                    <span class="activity__icon">⚡️</span>
+                    <span class="activity__icon">🚀</span>
                     <span class="activity__value">${workout.speed.toFixed(1)}</span>
                     <span class="activity__unit">km/h</span>
                 </div>
