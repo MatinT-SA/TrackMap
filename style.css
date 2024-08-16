@@ -14,7 +14,7 @@
 :root {
     --color-dark-first: #313131;
     --color-light-first: #bebebe;
-    --color-green-first: rgb(8, 119, 43);
+    --color-blue-first: #1E88E5;
     --color-purple-first: rgb(128, 22, 82);
     --color-green-second: rgb(15, 144, 26);
     --color-blue-logo: #98E0CB;
@@ -233,7 +233,7 @@ body {
 }
 
 .activity--running {
-    border-left: 5px solid var(--color-green-first);
+    border-left: 5px solid var(--color-blue-first);
 }
 
 .activity--cycling {
@@ -288,7 +288,7 @@ body {
 }
 
 .running-popup .leaflet-popup-content-wrapper {
-    box-shadow: 0px 0px 7px 5px var(--color-green-first);
+    box-shadow: 0px 0px 7px 5px var(--color-blue-first);
 }
 
 .cycling-popup .leaflet-popup-content-wrapper {
