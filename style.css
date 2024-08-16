@@ -209,9 +209,9 @@ body {
 }
 
 .form.hidden {
-    transform: translateY(-30rem);
+    transform: translateY(-40rem);
     height: 0;
-    padding: 0 2.25rem;
+    padding: 0 2rem;
     margin-bottom: 0;
     opacity: 0;
 }

@@ -125,6 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
         _showForm(mapE) {
             this.#mapEvent = mapE;
 
+            form.classList.remove('hidden');
+            form.style.display = 'grid';
+
             setTimeout(() => {
                 inputDistance.focus();
             }, 100);
@@ -135,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             form.style.display = 'none';
             form.classList.add('hidden');
-            setTimeout(() => form.style.display = 'grid', 1000);
         }
 
         _toggleElevationInput() {
@@ -343,9 +345,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-
-
     /***** Form ********/
 
     inputs.forEach(input => {
@@ -357,7 +356,5 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
         });
     });
-
-
 
 });
