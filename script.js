@@ -130,6 +130,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         }
 
+        _hideForm() {
+            inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
+
+            form.style.display = 'none';
+            form.classList.add('hidden');
+            setTimeout(() => form.style.display = 'grid', 1000);
+        }
+
         _toggleElevationInput() {
             inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
             inputPace.closest('.form__row').classList.toggle('form__row--hidden');
@@ -171,9 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 workout = new Cycling([lat, lng], distance, time, elevation);
             }
 
-            this.#workouts.push(workout);
+            this._hideForm();
 
-            inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
+            this.#workouts.push(workout);
 
             this._renderWorkout(workout);
 
@@ -191,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         closeOnClick: false,
                         className: `${workout.type}-popup`
                     }))
-                    .setPopupContent('Workout')
+                    .setPopupContent(`${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♂️'} ${workout.description}`)
                     .openPopup();
             }
         }
