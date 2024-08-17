@@ -265,8 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 animation: true,
                 pan: {
                     duration: 1,
-                    easeLinearity: 0.5,
-                    noMoveStart: true
+                    easeLinearity: 0.4
                 }
             })
         }
