@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mapElement = document.getElementById('map');
     const closeButton = document.getElementById('close-btn');
     const tooltip = document.querySelector('.tooltip');
+    const activities = document.querySelector('.activities');
     const body = document.body;
     const dockDistance = 70;
     const form = document.querySelector('.form');
@@ -17,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputElevation = document.querySelector('.form__input--elevation');
 
     let isInfoVisible = false;
-    let map, mapEvent;
 
     /***** Error message function ********/
     function showError(message) {
@@ -88,11 +88,13 @@ document.addEventListener('DOMContentLoaded', () => {
         #map;
         #mapEvent;
         #workouts = [];
+        #mapZoomLevel = 14;
 
         constructor() {
             this._getPosition();
             form.addEventListener('submit', this._newWorkout.bind(this));
             inputType.addEventListener('change', this._toggleElevationInput);
+            activities.addEventListener('click', this._moveToMarker.bind(this));
         }
 
         _getPosition() {
@@ -110,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const coords = [latitude, longitude];
 
-            this.#map = L.map('map').setView(coords, 14);
+            this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
 
             L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
                 maxZoom: 20,
@@ -251,6 +253,22 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             form.insertAdjacentHTML('afterend', html);
+        }
+
+        _moveToMarker(e) {
+            const workoutElement = e.target.closest('.activity');
+
+            if (!workoutElement) return;
+
+            const workout = this.#workouts.find(work => work.id === workoutElement.dataset.id);
+            this.#map.setView(workout.coords, this.#mapZoomLevel, {
+                animation: true,
+                pan: {
+                    duration: 1,
+                    easeLinearity: 0.5,
+                    noMoveStart: true
+                }
+            })
         }
     }
 
