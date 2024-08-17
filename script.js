@@ -95,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             form.addEventListener('submit', this._newWorkout.bind(this));
             inputType.addEventListener('change', this._toggleElevationInput);
             activities.addEventListener('click', this._moveToMarker.bind(this));
+            this._getLocalStorage();
         }
 
         _getPosition() {
@@ -188,6 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this._renderWorkout(workout);
 
             this._renderWorkoutMarker(workout);
+
+            this._setLocalStorage();
         }
 
         /***** Geolocation ********/
@@ -267,6 +270,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     duration: 1,
                     easeLinearity: 0.4
                 }
+            })
+        }
+
+        _setLocalStorage() {
+            const data = localStorage.setItem('activities', JSON.stringify(this.#workouts));
+        }
+
+        _getLocalStorage() {
+            const data = JSON.parse(localStorage.getItem('activities'));
+            console.log(data);
+
+            if (!data) return;
+
+            this.#workouts = data;
+
+            this.#workouts.forEach(work => {
+                this._renderWorkout(work);
             })
         }
     }
