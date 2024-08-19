@@ -13,6 +13,7 @@ const inputTime = document.querySelector('.form__input--time');
 const inputPace = document.querySelector('.form__input--pace');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+const dockDistance = 70;
 let isInfoVisible = false;
 
 /***** Error message function ********/
@@ -78,7 +79,6 @@ class Cycling extends Workout {
 }
 
 /***** App class ********/
-
 class App {
     #map;
     #mapEvent;
@@ -95,16 +95,14 @@ class App {
 
     _getPosition() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), function () {
-                return showError('Could not get your current position');
+            navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), () => {
+                showError('Could not get your current position');
             });
         }
     }
 
     _loadMap(position) {
-        const { latitude } = position.coords;
-        const { longitude } = position.coords;
-
+        const { latitude, longitude } = position.coords;
         const coords = [latitude, longitude];
 
         this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
@@ -114,7 +112,7 @@ class App {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
         }).addTo(this.#map);
 
-        this.#map.on('click', window.showInfo);
+        this.#map.on('click', this._showForm.bind(this));
 
         this.#workouts.forEach(work => {
             this._renderWorkoutMarker(work);
@@ -166,7 +164,7 @@ class App {
             workout = new Running([lat, lng], distance, time, pace);
         }
 
-        if (type === "cycling") {
+        if (type === 'cycling') {
             const elevation = +inputElevation.value;
 
             if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
@@ -293,12 +291,94 @@ window.showInfo = () => {
     isInfoVisible = true;
 };
 
-window.hideInfo = () => {
+const hideInfo = () => {
     info.classList.remove('show');
     tooltip.style.display = 'block';
     body.classList.remove('no-animations');
     isInfoVisible = false;
 };
 
-info.addEventListener('click', window.hideInfo);
-closeButton.addEventListener('click', window.hideInfo);
+let isDragging = false;
+let startX, startY, initialX, initialY;
+
+info.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    initialX = info.offsetLeft;
+    initialY = info.offsetTop;
+    info.style.cursor = 'grabbing';
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const newLeft = initialX + dx;
+        const newTop = initialY + dy;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const infoRect = info.getBoundingClientRect();
+        const newRight = newLeft + infoRect.width;
+        const newBottom = newTop + infoRect.height;
+
+        if (newLeft < 0) {
+            info.style.left = '0px';
+        } else if (newRight > viewportWidth) {
+            info.style.left = `${viewportWidth - infoRect.width}px`;
+        } else {
+            info.style.left = `${newLeft}px`;
+        }
+
+        if (newTop < 0) {
+            info.style.top = '0px';
+        } else if (newBottom > viewportHeight) {
+            info.style.top = `${viewportHeight - infoRect.height}px`;
+        } else {
+            info.style.top = `${newTop}px`;
+        }
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    if (isDragging) {
+        const infoRect = info.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        if (infoRect.left < dockDistance) {
+            info.style.left = '0px';
+        } else if (viewportWidth - infoRect.right < dockDistance) {
+            info.style.left = `${viewportWidth - infoRect.width}px`;
+        }
+
+        if (infoRect.top < dockDistance) {
+            info.style.top = '0px';
+        } else if (viewportHeight - infoRect.bottom < dockDistance) {
+            info.style.top = `${viewportHeight - infoRect.height}px`;
+        }
+
+        isDragging = false;
+        info.style.cursor = 'move';
+    }
+});
+
+closeButton.addEventListener('click', hideInfo);
+
+mapElement.addEventListener('click', () => {
+    if (!isInfoVisible) {
+        window.showInfo();
+    }
+});
+
+/***** Form ********/
+
+inputs.forEach(input => {
+    input.addEventListener('focus', (e) => {
+        e.target.closest('.form__row').querySelector('.form__label').classList.add('focused');
+    });
+
+    input.addEventListener('blur', (e) => {
+        e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
+    });
+});
