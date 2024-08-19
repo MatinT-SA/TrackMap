@@ -5,7 +5,6 @@ const closeButton = document.getElementById('close-btn');
 const tooltip = document.querySelector('.tooltip');
 const activities = document.querySelector('.activities');
 const body = document.body;
-const dockDistance = 70;
 const form = document.querySelector('.form');
 const inputs = document.querySelectorAll('.form__input');
 const inputType = document.querySelector('.form__input--type');
@@ -115,7 +114,7 @@ class App {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
         }).addTo(this.#map);
 
-        this.#map.on('click', this._showForm.bind(this));
+        this.#map.on('click', window.showInfo);
 
         this.#workouts.forEach(work => {
             this._renderWorkoutMarker(work);
@@ -286,16 +285,20 @@ class App {
 const app = new App();
 
 /***** Show and close info ********/
-info.addEventListener('click', function () {
-    tooltip.style.transition = 'opacity 0.5s ease';
-    tooltip.style.opacity = isInfoVisible ? '0' : '1';
-    tooltip.style.visibility = isInfoVisible ? 'hidden' : 'visible';
-    isInfoVisible = !isInfoVisible;
-});
 
-closeButton.addEventListener('click', function () {
-    tooltip.style.transition = 'opacity 0.5s ease';
-    tooltip.style.opacity = '0';
-    tooltip.style.visibility = 'hidden';
+window.showInfo = () => {
+    info.classList.add('show');
+    tooltip.style.display = 'none';
+    body.classList.add('no-animations');
+    isInfoVisible = true;
+};
+
+window.hideInfo = () => {
+    info.classList.remove('show');
+    tooltip.style.display = 'block';
+    body.classList.remove('no-animations');
     isInfoVisible = false;
-});
+};
+
+info.addEventListener('click', window.hideInfo);
+closeButton.addEventListener('click', window.hideInfo);
