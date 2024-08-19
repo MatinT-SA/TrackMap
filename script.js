@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', function () {
+
 
     /***** Selecting DOM elements ********/
 
@@ -121,6 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }).addTo(this.#map);
 
             this.#map.on('click', this._showForm.bind(this));
+
+            this.#workouts.forEach(work => {
+                this._renderWorkoutMarker(work);
+            });
         }
 
         _showForm(mapE) {
@@ -189,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this._renderWorkout(workout);
 
             this._renderWorkoutMarker(workout);
+            console.log(workout);
 
             this._setLocalStorage();
         }
@@ -274,24 +280,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         _setLocalStorage() {
-            const data = localStorage.setItem('activities', JSON.stringify(this.#workouts));
+            localStorage.setItem('activities', JSON.stringify(this.#workouts));
         }
 
         _getLocalStorage() {
             const data = JSON.parse(localStorage.getItem('activities'));
-            console.log(data);
 
             if (!data) return;
 
             this.#workouts = data;
+            // console.log(this.#workouts);
 
             this.#workouts.forEach(work => {
                 this._renderWorkout(work);
-            })
+            });
+        }
+
+        reset() {
+            localStorage.removeItem('activities');
+            location.reload();
         }
     }
-
-    const app = new App();
 
     window.showInfo = () => {
         info.classList.add('show');
@@ -391,5 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
         });
     });
+
+    const app = new App();
 
 });
