@@ -109,7 +109,7 @@ class App {
 
         L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
             maxZoom: 20,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://cyclosm.org/">CyclOSM</a>'
+            attribution: 'Powered by'
         }).addTo(this.#map);
 
         this.#map.on('click', this._showForm.bind(this));
@@ -186,7 +186,7 @@ class App {
         L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
             .bindPopup(L.popup({
                 maxWidth: 300,
-                minWidth: 150,
+                minWidth: 160,
                 autoClose: false,
                 closeOnClick: false,
                 className: `${workout.type}-popup`
