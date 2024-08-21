@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="style.css">
     <title>TrackMap</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -29,6 +31,11 @@
 
     <div id="info" class="info">
         <button id="close-btn">✖</button>
+
+        <button class="info__btn--deleteAll" onclick="app.reset()">
+            <i class="fa fa-trash info__btn--deleteAll_icon"></i>
+            <div class="tooltip__deleteAll">Delete All</div>
+        </button>
 
         <img src="img/logo.png" alt="Logo" class="logo">
 
@@ -62,7 +69,6 @@
 
         </ul>
     </div>
-
 
 </body>
 
