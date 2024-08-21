@@ -149,14 +149,21 @@ body {
     cursor: var(--cursor-point);
 }
 
-.info__btn--deleteAll {
-    display: none;
+.actions {
     position: absolute;
-    left: 1rem;
-    top: 4rem;
     cursor: var(--cursor-point);
     background: none;
     border: none;
+}
+
+.icons {
+    transition: .2s ease-in;
+}
+
+.info__btn--deleteAll {
+    display: none;
+    left: 1rem;
+    top: 4rem;
 }
 
 .info__btn--deleteAll:hover .info__btn--deleteAll_icon {
@@ -168,7 +175,6 @@ body {
 .info__btn--deleteAll_icon {
     font-size: 2rem;
     color: red;
-    transition: .2s ease-in;
 }
 
 .tooltip__deleteAll {
@@ -295,6 +301,8 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     text-align: center;
     gap: 1rem 2rem;
+
+    position: relative;
 }
 
 .activity--running {
@@ -333,6 +341,63 @@ body {
     color: var(--color-dark-first);
     text-transform: uppercase;
     font-weight: 800;
+}
+
+.delete-activity {
+    top: 1rem;
+    right: 0;
+}
+
+.delete-activity:hover .delete-activity_icon {
+    color: red;
+    font-size: 1.7rem;
+}
+
+.delete-activity_icon {
+    font-size: 1.6rem;
+    color: rgb(220, 0, 0);
+}
+
+.edit-activity {
+    top: 1rem;
+    left: 0;
+}
+
+.edit-activity:hover .edit-activity_icon {
+    font-size: 1.7rem;
+    color: rgb(188, 188, 188);
+}
+
+.edit-activity_icon {
+    font-size: 1.6rem;
+    color: white;
+}
+
+.tooltip--actions {
+    position: absolute;
+    bottom: 2.5rem;
+    background: var(--color-dark-first);
+    color: var(--color-light-first);
+    padding: .5rem 1rem;
+    border-radius: 5px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 2000;
+    position: relative;
+    font-size: 1.4rem;
+}
+
+.tooltip__edit {
+    left: 4rem;
+}
+
+.tooltip__delete {
+    right: 4rem;
+}
+
+.edit-activity:hover .tooltip__edit,
+.delete-activity:hover .tooltip__delete {
+    opacity: 1;
 }
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */

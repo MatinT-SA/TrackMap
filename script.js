@@ -211,6 +211,14 @@ class App {
     _renderWorkout(workout) {
         let html = `
             <li class="activity activity--${workout.type}" data-id="${workout.id}">
+                <button class="delete-activity actions">
+                    <i class="fa fa-trash delete-activity_icon icons"></i>
+                    <div class="tooltip--actions tooltip__delete">Delete</div>
+                </button>
+                <button class="edit-activity actions">
+                    <i class="fa-solid fa-pen edit-activity_icon icons"></i>
+                    <div class="tooltip--actions tooltip__edit">Edit</div>
+                </button>
                 <h2 class="activity__title">${workout.description}</h2>
                 <div class="activity__details">
                     <span class="activity__icon">${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}</span>
