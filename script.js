@@ -13,22 +13,10 @@ const inputTime = document.querySelector('.form__input--time');
 const inputPace = document.querySelector('.form__input--pace');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnDeleteAll = document.querySelector('.info__btn--deleteAll');
+const deleteAllIcon = document.querySelector('.info__btn--deleteAll_icon');
 
 const dockDistance = 70;
 let isInfoVisible = false;
-
-/***** Error message function ********/
-function showError(message) {
-    const errorContainer = document.querySelector('.error-container');
-    errorContainer.innerText = message;
-    errorContainer.classList.remove('hide');
-    errorContainer.classList.add('show');
-
-    setTimeout(() => {
-        errorContainer.classList.remove('show');
-        errorContainer.classList.add('hide');
-    }, 3000);
-}
 
 /***** Classes ********/
 
@@ -422,3 +410,28 @@ inputs.forEach(input => {
     });
 });
 
+/***** Error message function ********/
+
+function showError(message) {
+    const errorContainer = document.querySelector('.error-container');
+    errorContainer.innerText = message;
+    errorContainer.classList.remove('hide');
+    errorContainer.classList.add('show');
+
+    setTimeout(() => {
+        errorContainer.classList.remove('show');
+        errorContainer.classList.add('hide');
+    }, 3000);
+}
+
+/***** changing font awesome icon delete all when hovering ********/
+
+btnDeleteAll.addEventListener('mouseover', () => {
+    deleteAllIcon.classList.remove('fa-trash-alt');
+    deleteAllIcon.classList.add('fa-trash');
+});
+
+btnDeleteAll.addEventListener('mouseout', () => {
+    deleteAllIcon.classList.add('fa-trash-alt');
+    deleteAllIcon.classList.remove('fa-trash');
+})
