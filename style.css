@@ -159,9 +159,16 @@ body {
     border: none;
 }
 
+.info__btn--deleteAll:hover .info__btn--deleteAll_icon {
+    font-size: 2.2rem;
+    transform: translate(2px, 2px);
+    color: rgb(220, 0, 0);
+}
+
 .info__btn--deleteAll_icon {
     font-size: 2rem;
     color: red;
+    transition: .2s ease-in;
 }
 
 .tooltip__deleteAll {
