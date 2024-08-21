@@ -12,6 +12,7 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputTime = document.querySelector('.form__input--time');
 const inputPace = document.querySelector('.form__input--pace');
 const inputElevation = document.querySelector('.form__input--elevation');
+const btnDeleteAll = document.querySelector('.info__btn--deleteAll');
 
 const dockDistance = 70;
 let isInfoVisible = false;
@@ -90,7 +91,29 @@ class App {
         form.addEventListener('submit', this._newWorkout.bind(this));
         inputType.addEventListener('change', this._toggleElevationInput);
         activities.addEventListener('click', this._moveToMarker.bind(this));
+        btnDeleteAll.addEventListener('click', this.deleteAllActivities.bind(this));
         this._getLocalStorage();
+    }
+
+
+    /***** Delete All Activities ********/
+    _toggleDeletionBtn() {
+        if (this.#workouts.length > 0) {
+            btnDeleteAll.style.display = 'block';
+        } else {
+            btnDeleteAll.style.display = 'none';
+        }
+    }
+
+    deleteAllActivities() {
+        this.reset();
+        this._toggleDeletionBtn();
+
+        btnDeleteAll.style.display = 'none';
+
+        setTimeout(() => {
+            info.classList.remove('show');
+        }, 300);
     }
 
     _getPosition() {
@@ -175,6 +198,8 @@ class App {
         }
 
         this.#workouts.push(workout);
+
+        btnDeleteAll.style.display = 'block';
 
         this._renderWorkout(workout);
         this._renderWorkoutMarker(workout);
@@ -272,11 +297,25 @@ class App {
         this.#workouts.forEach(work => {
             this._renderWorkout(work);
         });
+
+        this._toggleDeletionBtn();
     }
 
     reset() {
         localStorage.removeItem('activities');
-        location.reload();
+
+        this.#workouts = [];
+
+        document.querySelectorAll('.activity').forEach(activity => activity.remove());
+
+        if (this.#map) {
+            this.#map.eachLayer((layer) => {
+                if (layer instanceof L.Marker) {
+                    this.#map.removeLayer(layer);
+                }
+            })
+        }
+
     }
 }
 
@@ -382,3 +421,4 @@ inputs.forEach(input => {
         e.target.closest('.form__row').querySelector('.form__label').classList.remove('focused');
     });
 });
+
