@@ -276,7 +276,18 @@ class App {
 
     reset() {
         localStorage.removeItem('activities');
-        location.reload();
+
+        this.#workouts = [];
+
+        document.querySelectorAll('.activity').forEach(activity => activity.remove());
+
+        if (this.#map) {
+            this.#map.eachLayer((layer) => {
+                if (layer instanceof L.Marker) {
+                    this.#map.removeLayer(layer);
+                }
+            })
+        }
     }
 }
 
