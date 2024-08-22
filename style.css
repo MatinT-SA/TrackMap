@@ -166,13 +166,13 @@ body {
     top: 4rem;
 }
 
-.info__btn--deleteAll:hover .info__btn--deleteAll_icon {
+.info__btn--deleteAll:hover .info__btn--deleteAll__icon {
     font-size: 2.2rem;
     transform: translate(2px, 2px);
     color: rgb(220, 0, 0);
 }
 
-.info__btn--deleteAll_icon {
+.info__btn--deleteAll__icon {
     font-size: 2rem;
     color: red;
 }
@@ -348,12 +348,12 @@ body {
     right: 0;
 }
 
-.delete-activity:hover .delete-activity_icon {
+.delete-activity:hover .delete-activity__icon {
     color: red;
     font-size: 1.7rem;
 }
 
-.delete-activity_icon {
+.delete-activity__icon {
     font-size: 1.6rem;
     color: rgb(220, 0, 0);
 }
@@ -363,12 +363,12 @@ body {
     left: 0;
 }
 
-.edit-activity:hover .edit-activity_icon {
+.edit-activity:hover .edit-activity__icon {
     font-size: 1.7rem;
     color: rgb(188, 188, 188);
 }
 
-.edit-activity_icon {
+.edit-activity__icon {
     font-size: 1.6rem;
     color: white;
 }
@@ -392,7 +392,7 @@ body {
 }
 
 .tooltip__delete {
-    right: 4rem;
+    right: 4.5rem;
 }
 
 .edit-activity:hover .tooltip__edit,

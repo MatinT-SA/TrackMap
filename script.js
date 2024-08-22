@@ -13,7 +13,7 @@ const inputTime = document.querySelector('.form__input--time');
 const inputPace = document.querySelector('.form__input--pace');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnDeleteAll = document.querySelector('.info__btn--deleteAll');
-const deleteAllIcon = document.querySelector('.info__btn--deleteAll_icon');
+const deleteAllIcon = document.querySelector('.info__btn--deleteAll__icon');
 
 const dockDistance = 70;
 let isInfoVisible = false;
@@ -212,11 +212,11 @@ class App {
         let html = `
             <li class="activity activity--${workout.type}" data-id="${workout.id}">
                 <button class="delete-activity actions">
-                    <i class="fa fa-trash delete-activity_icon icons"></i>
+                    <i class="fa fa-trash delete-activity__icon icons"></i>
                     <div class="tooltip--actions tooltip__delete">Delete</div>
                 </button>
                 <button class="edit-activity actions">
-                    <i class="fa-solid fa-pen edit-activity_icon icons"></i>
+                    <i class="fa-solid fa-pen edit-activity__icon icons"></i>
                     <div class="tooltip--actions tooltip__edit">Edit</div>
                 </button>
                 <h2 class="activity__title">${workout.description}</h2>
@@ -432,8 +432,9 @@ function showError(message) {
     }, 3000);
 }
 
-/***** changing font awesome icon delete all when hovering ********/
+/***** changing font awesome icons when hovering ********/
 
+// btnDeleteAll
 btnDeleteAll.addEventListener('mouseover', () => {
     deleteAllIcon.classList.remove('fa-trash-alt');
     deleteAllIcon.classList.add('fa-trash');
@@ -442,4 +443,41 @@ btnDeleteAll.addEventListener('mouseover', () => {
 btnDeleteAll.addEventListener('mouseout', () => {
     deleteAllIcon.classList.add('fa-trash-alt');
     deleteAllIcon.classList.remove('fa-trash');
-})
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const deleteActivityBtns = document.querySelectorAll('.delete-activity');
+    const deleteActivityIcons = document.querySelectorAll('.delete-activity__icon');
+    const editActivityBtns = document.querySelectorAll('.edit-activity');
+    const editActivityIcons = document.querySelectorAll('.edit-activity__icon');
+
+    // deleteActivityBtns
+    deleteActivityBtns.forEach((btn, index) => {
+        const iconDelete = deleteActivityIcons[index];
+
+        btn.addEventListener('mouseover', () => {
+            iconDelete.classList.remove('fa-trash');
+            iconDelete.classList.add('fa-trash-alt');
+        });
+
+        btn.addEventListener('mouseout', () => {
+            iconDelete.classList.add('fa-trash');
+            iconDelete.classList.remove('fa-trash-alt');
+        });
+    });
+
+    // editActivityBtns
+    editActivityBtns.forEach((btn, index) => {
+        const iconEdit = editActivityIcons[index];
+
+        btn.addEventListener('mouseover', () => {
+            iconEdit.classList.remove('fa-solid', 'fa-pen');
+            iconEdit.classList.add('fa-solid', 'fa-pen-to-square');
+        });
+
+        btn.addEventListener('mouseout', () => {
+            iconEdit.classList.remove('fa-solid', 'fa-pen-to-square');
+            iconEdit.classList.add('fa-solid', 'fa-pen');
+        });
+    });
+});
