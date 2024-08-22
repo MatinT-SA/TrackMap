@@ -86,7 +86,6 @@ class App {
         this._getLocalStorage();
     }
 
-
     _editActivity(e) {
         const editButton = e.target.closest('.edit-activity');
         if (!editButton) return;
@@ -99,8 +98,6 @@ class App {
         this._showForm(null, workout); // Pass workout to pre-fill form
     }
 
-
-    /***** Delete All Activities ********/
     _toggleDeletionBtn() {
         if (this.#workouts.length > 0) {
             btnDeleteAll.style.display = 'block';
@@ -195,8 +192,6 @@ class App {
         }, 100);
     }
 
-
-
     _hideForm() {
         inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
         form.dataset.editId = ''; // Clear the edit ID
@@ -207,6 +202,39 @@ class App {
     _toggleElevationInput() {
         inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
         inputPace.closest('.form__row').classList.toggle('form__row--hidden');
+    }
+
+    _createNewWorkout(distance, time, pace, type, lat, lng) {
+        let workout;
+        if (type === 'running') {
+            workout = new Running([lat, lng], distance, time, pace);
+        } else if (type === 'cycling') {
+            workout = new Cycling([lat, lng], distance, time, pace);
+        }
+        this.#workouts.push(workout);
+        this._renderWorkout(workout);
+        this._renderWorkoutMarker(workout);
+    }
+
+    _editExistingWorkout(workout, distance, time, pace, elevation) {
+        // Remove old workout from the DOM and map
+        this._removeLayer(workout.id);
+        document.querySelector(`.activity[data-id="${workout.id}"]`).remove();
+
+        // Update the workout object
+        workout.distance = distance;
+        workout.time = time;
+        if (workout instanceof Running) {
+            workout.pace = pace;
+            workout.calcPace();
+        } else if (workout instanceof Cycling) {
+            workout.elevationGain = elevation;
+            workout.calcSpeed();
+        }
+
+        // Re-add updated workout
+        this._renderWorkout(workout);
+        this._renderWorkoutMarker(workout);
     }
 
     _newWorkout(e) {
@@ -224,59 +252,37 @@ class App {
         const type = inputType.value;
         const distance = +inputDistance.value;
         const time = +inputTime.value;
+        const pace = +inputPace.value;
+        const elevation = +inputElevation.value;
         let workout;
 
         if (type === 'running') {
-            const pace = +inputPace.value;
-
             if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
                 return showError('Valid and positive numbers are allowed');
             }
 
             if (isEditing) {
-                // Update existing workout
                 workout = this.#workouts.find(work => work.id === isEditing);
                 if (workout) {
-                    workout.distance = distance;
-                    workout.time = time;
-                    workout.pace = pace;
-                    workout.calcPace();
-                    this._renderWorkout(workout); // Update the rendered workout
-                    this._renderWorkoutMarker(workout); // Update the marker
+                    this._editExistingWorkout(workout, distance, time, pace);
                 }
             } else {
-                // Add new workout
-                workout = new Running([lat, lng], distance, time, pace);
-                this.#workouts.push(workout);
-                this._renderWorkout(workout);
-                this._renderWorkoutMarker(workout);
+                this._createNewWorkout(distance, time, pace, type, lat, lng);
             }
         }
 
         if (type === 'cycling') {
-            const elevation = +inputElevation.value;
-
             if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
                 return showError('Valid and positive numbers are allowed');
             }
 
             if (isEditing) {
-                // Update existing workout
                 workout = this.#workouts.find(work => work.id === isEditing);
                 if (workout) {
-                    workout.distance = distance;
-                    workout.time = time;
-                    workout.elevationGain = elevation;
-                    workout.calcSpeed();
-                    this._renderWorkout(workout); // Update the rendered workout
-                    this._renderWorkoutMarker(workout); // Update the marker
+                    this._editExistingWorkout(workout, distance, time, pace, elevation);
                 }
             } else {
-                // Add new workout
-                workout = new Cycling([lat, lng], distance, time, elevation);
-                this.#workouts.push(workout);
-                this._renderWorkout(workout);
-                this._renderWorkoutMarker(workout);
+                this._createNewWorkout(distance, time, pace, type, lat, lng);
             }
         }
 
@@ -284,13 +290,6 @@ class App {
         this._setLocalStorage();
         this._toggleDeletionBtn();
     }
-
-
-
-
-
-
-
 
     _renderWorkoutMarker(workout) {
         const marker = L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
@@ -414,17 +413,16 @@ class App {
         }
     }
 
-
     reset() {
         localStorage.removeItem('activities');
-
         this.#workouts = [];
-
         document.querySelectorAll('.activity').forEach(activity => activity.remove());
-
         this._removeLayer();
     }
 }
+
+
+
 
 const app = new App();
 
