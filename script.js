@@ -73,6 +73,7 @@ class App {
     #mapEvent;
     #workouts = [];
     #mapZoomLevel = 14;
+    #markers = {};
 
     constructor() {
         this._getPosition();
@@ -80,6 +81,7 @@ class App {
         inputType.addEventListener('change', this._toggleElevationInput);
         activities.addEventListener('click', this._moveToMarker.bind(this));
         btnDeleteAll.addEventListener('click', this.deleteAllActivities.bind(this));
+        activities.addEventListener('click', this.deleteActivity.bind(this));
         this._getLocalStorage();
     }
 
@@ -93,15 +95,36 @@ class App {
         }
     }
 
+    _infoAutoClose() {
+        setTimeout(() => {
+            info.classList.remove('show');
+        }, 300);
+    }
+
     deleteAllActivities() {
+
+
         this.reset();
         this._toggleDeletionBtn();
 
         btnDeleteAll.style.display = 'none';
 
-        setTimeout(() => {
-            info.classList.remove('show');
-        }, 300);
+        this._infoAutoClose();
+    }
+
+    deleteActivity(e) {
+        const deleteButton = e.target.closest('.delete-activity');
+        if (!deleteButton) return;
+
+        const workoutElement = deleteButton.closest('.activity');
+        if (!workoutElement) return;
+
+        const workoutId = workoutElement.dataset.id;
+        this.#workouts = this.#workouts.filter(work => work.id !== workoutId);
+        this._setLocalStorage();
+        workoutElement.remove();
+        this._removeLayer(workoutId);
+        this._infoAutoClose();
     }
 
     _getPosition() {
@@ -196,7 +219,7 @@ class App {
     }
 
     _renderWorkoutMarker(workout) {
-        L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
+        const marker = L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
             .bindPopup(L.popup({
                 maxWidth: 300,
                 minWidth: 160,
@@ -206,6 +229,8 @@ class App {
             }))
             .setPopupContent(`${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♂️'} ${workout.description}`)
             .openPopup();
+
+        this.#markers[workout.id] = marker;
     }
 
     _renderWorkout(workout) {
@@ -297,6 +322,25 @@ class App {
         this._toggleDeletionBtn();
     }
 
+    _removeLayer(workoutId = null) {
+        if (workoutId) {
+            const marker = this.#markers[workoutId];
+            if (marker) {
+                this.#map.removeLayer(marker);
+                delete this.#markers[workoutId];
+            }
+        } else {
+            if (this.#map) {
+                this.#map.eachLayer(layer => {
+                    if (layer instanceof L.Marker) {
+                        this.#map.removeLayer(layer);
+                    }
+                });
+            }
+        }
+    }
+
+
     reset() {
         localStorage.removeItem('activities');
 
@@ -304,14 +348,7 @@ class App {
 
         document.querySelectorAll('.activity').forEach(activity => activity.remove());
 
-        if (this.#map) {
-            this.#map.eachLayer((layer) => {
-                if (layer instanceof L.Marker) {
-                    this.#map.removeLayer(layer);
-                }
-            })
-        }
-
+        this._removeLayer();
     }
 }
 
