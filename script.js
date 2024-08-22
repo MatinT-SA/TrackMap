@@ -194,11 +194,9 @@ class App {
     }
 
     _editExistingWorkout(workout, distance, time, pace, elevation) {
-        // Remove old workout from the DOM and map
         this._removeLayer(workout.id);
         document.querySelector(`.activity[data-id="${workout.id}"]`).remove();
 
-        // Update the workout object
         workout.distance = distance;
         workout.time = time;
         if (workout instanceof Running) {
@@ -209,7 +207,6 @@ class App {
             workout.calcSpeed();
         }
 
-        // Re-add updated workout
         this._renderWorkout(workout);
         this._renderWorkoutMarker(workout);
     }
@@ -217,11 +214,9 @@ class App {
     _newWorkout(e) {
         e.preventDefault();
 
-        // Check if editing or adding a new workout
         const isEditing = form.dataset.editId;
 
-        // If editing, no need to set a new location
-        const { lat, lng } = this.#mapEvent ? this.#mapEvent.latlng : [0, 0]; // Use existing coordinates if editing
+        const { lat, lng } = this.#mapEvent ? this.#mapEvent.latlng : [0, 0];
 
         const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp));
         const positiveInputs = (...inputs) => inputs.every(inp => inp > 0);
@@ -419,9 +414,6 @@ class App {
         this._removeLayer();
     }
 }
-
-
-
 
 const app = new App();
 
