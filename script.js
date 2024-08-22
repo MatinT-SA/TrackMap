@@ -86,6 +86,13 @@ class App {
         this._getLocalStorage();
     }
 
+    _infoAutoClose() {
+        setTimeout(() => {
+            info.classList.remove('show');
+        }, 300);
+    }
+
+    /***** Edit Activity ********/
     _editActivity(e) {
         const editButton = e.target.closest('.edit-activity');
         if (!editButton) return;
@@ -95,7 +102,7 @@ class App {
 
         const workoutId = workoutElement.dataset.id;
         const workout = this.#workouts.find(work => work.id === workoutId);
-        this._showForm(null, workout); // Pass workout to pre-fill form
+        this._showForm(null, workout);
     }
 
     _toggleDeletionBtn() {
@@ -104,33 +111,6 @@ class App {
         } else {
             btnDeleteAll.style.display = 'none';
         }
-    }
-
-    _infoAutoClose() {
-        setTimeout(() => {
-            info.classList.remove('show');
-        }, 300);
-    }
-
-    deleteAllActivities() {
-        this.reset();
-        this._toggleDeletionBtn(); // Update button visibility
-        this._infoAutoClose();
-    }
-
-    deleteActivity(e) {
-        const deleteButton = e.target.closest('.delete-activity');
-        if (!deleteButton) return;
-
-        const workoutElement = deleteButton.closest('.activity');
-        if (!workoutElement) return;
-
-        const workoutId = workoutElement.dataset.id;
-        this.#workouts = this.#workouts.filter(work => work.id !== workoutId);
-        this._setLocalStorage();
-        workoutElement.remove();
-        this._removeLayer(workoutId);
-        this._infoAutoClose();
     }
 
     _getPosition() {
@@ -162,7 +142,6 @@ class App {
     _showForm(mapE, workout = null) {
         this.#mapEvent = mapE;
 
-        // Show the form
         form.classList.remove('hidden');
         form.style.display = 'grid';
 
@@ -181,10 +160,10 @@ class App {
                 inputPace.closest('.form__row').classList.add('form__row--hidden');
                 inputElevation.closest('.form__row').classList.remove('form__row--hidden');
             }
-            form.dataset.editId = workout.id; // Set the ID of the workout being edited
+            form.dataset.editId = workout.id;
         } else {
             inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
-            form.dataset.editId = ''; // Clear the stored ID for new workout
+            form.dataset.editId = '';
         }
 
         setTimeout(() => {
@@ -194,7 +173,7 @@ class App {
 
     _hideForm() {
         inputDistance.value = inputTime.value = inputPace.value = inputElevation.value = '';
-        form.dataset.editId = ''; // Clear the edit ID
+        form.dataset.editId = '';
         form.style.display = 'none';
         form.classList.add('hidden');
     }
@@ -282,7 +261,7 @@ class App {
                     this._editExistingWorkout(workout, distance, time, pace, elevation);
                 }
             } else {
-                this._createNewWorkout(distance, time, pace, type, lat, lng);
+                this._createNewWorkout(distance, time, elevation, type, lat, lng);
             }
         }
 
@@ -411,6 +390,28 @@ class App {
                 });
             }
         }
+    }
+
+    /***** Delete All Activities ********/
+    deleteAllActivities() {
+        this.reset();
+        this._toggleDeletionBtn();
+        this._infoAutoClose();
+    }
+
+    deleteActivity(e) {
+        const deleteButton = e.target.closest('.delete-activity');
+        if (!deleteButton) return;
+
+        const workoutElement = deleteButton.closest('.activity');
+        if (!workoutElement) return;
+
+        const workoutId = workoutElement.dataset.id;
+        this.#workouts = this.#workouts.filter(work => work.id !== workoutId);
+        this._setLocalStorage();
+        workoutElement.remove();
+        this._removeLayer(workoutId);
+        this._infoAutoClose();
     }
 
     reset() {
