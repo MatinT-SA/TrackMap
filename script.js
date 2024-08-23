@@ -152,11 +152,13 @@ class App {
             if (workout.type === 'running') {
                 inputPace.value = workout.pace;
                 inputElevation.value = '';
-                this._toggleElevationInput();
+                inputElevation.closest('.form__row').classList.add('form__row--hidden');
+                inputPace.closest('.form__row').classList.remove('form__row--hidden');
             } else if (workout.type === 'cycling') {
                 inputElevation.value = workout.elevationGain;
                 inputPace.value = '';
-                this._toggleElevationInput();
+                inputPace.closest('.form__row').classList.add('form__row--hidden');
+                inputElevation.closest('.form__row').classList.remove('form__row--hidden');
             }
             form.dataset.editId = workout.id;
         } else {
