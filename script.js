@@ -95,13 +95,24 @@ class App {
         this.#workouts.sort((a, b) => {
             if (sortBy === 'distance') return a.distance - b.distance;
             if (sortBy === 'time') return a.time - b.time;
-            if (sortBy === 'pace') return (a.pace || a.calcPace()) - (b.pace || b.calcPace());
+            if (sortBy === 'pace') {
+                const paceA = a.type === 'running' ? a.pace || a.calcPace() : Infinity;
+                const paceB = b.type === 'running' ? b.pace || b.calcPace() : Infinity;
+                return paceA - paceB;
+            }
             if (sortBy === 'type') return a.type.localeCompare(b.type);
+            if (sortBy === 'elevationGain') {
+                const elevationA = a.type === 'cycling' ? a.elevationGain : -Infinity;
+                const elevationB = b.type === 'cycling' ? b.elevationGain : -Infinity;
+                return elevationA - elevationB;
+            }
         });
 
         this._clearWorkouts();
         this.#workouts.forEach(workout => this._renderWorkout(workout));
     }
+
+
 
     _clearWorkouts() {
         const workoutElements = document.querySelectorAll('.activity');
