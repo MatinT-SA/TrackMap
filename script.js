@@ -183,18 +183,6 @@ class App {
         inputPace.closest('.form__row').classList.toggle('form__row--hidden');
     }
 
-    _createNewWorkout(distance, time, pace, type, lat, lng) {
-        let workout;
-        if (type === 'running') {
-            workout = new Running([lat, lng], distance, time, pace);
-        } else if (type === 'cycling') {
-            workout = new Cycling([lat, lng], distance, time, pace);
-        }
-        this.#workouts.push(workout);
-        this._renderWorkout(workout);
-        this._renderWorkoutMarker(workout);
-    }
-
     _editExistingWorkout(workout, distance, time, pace, elevation) {
         this._removeLayer(workout.id);
         document.querySelector(`.activity[data-id="${workout.id}"]`).remove();
@@ -217,53 +205,83 @@ class App {
         e.preventDefault();
 
         const isEditing = form.dataset.editId;
-
-        const { lat, lng } = this.#mapEvent ? this.#mapEvent.latlng : [0, 0];
+        const type = inputType.value;
+        const distance = +inputDistance.value;
+        const time = +inputTime.value;
+        let workout;
 
         const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp));
         const positiveInputs = (...inputs) => inputs.every(inp => inp > 0);
 
-        const type = inputType.value;
-        const distance = +inputDistance.value;
-        const time = +inputTime.value;
-        const pace = +inputPace.value;
-        const elevation = +inputElevation.value;
-        let workout;
+        if (isEditing) {
+            let oldWorkout = this.#workouts.find(work => work.id === isEditing);
 
-        if (type === 'running') {
-            if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
-                return showError('Valid and positive numbers are allowed');
-            }
+            if (!oldWorkout) return;
 
-            if (isEditing) {
-                workout = this.#workouts.find(work => work.id === isEditing);
-                if (workout) {
-                    this._editExistingWorkout(workout, distance, time, pace);
+            const { id, coords } = oldWorkout;
+
+            if (type === 'running') {
+                const pace = +inputPace.value;
+
+                if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
+                    return showError('Valid and positive numbers are allowed');
                 }
-            } else {
-                this._createNewWorkout(distance, time, pace, type, lat, lng);
-            }
-        }
 
-        if (type === 'cycling') {
-            if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
-                return showError('Valid and positive numbers are allowed');
-            }
+                workout = new Running(coords, distance, time, pace);
+            } else if (type === 'cycling') {
+                const elevation = +inputElevation.value;
 
-            if (isEditing) {
-                workout = this.#workouts.find(work => work.id === isEditing);
-                if (workout) {
-                    this._editExistingWorkout(workout, distance, time, pace, elevation);
+                if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
+                    return showError('Valid and positive numbers are allowed');
                 }
-            } else {
-                this._createNewWorkout(distance, time, elevation, type, lat, lng);
+
+                workout = new Cycling(coords, distance, time, elevation);
             }
+
+            workout.id = id;
+
+            const index = this.#workouts.findIndex(work => work.id === isEditing);
+            this.#workouts[index] = workout;
+
+            this._removeLayer(workout.id);
+            this._renderWorkoutMarker(workout);
+
+            document.querySelector(`[data-id="${workout.id}"]`).remove();
+            this._renderWorkout(workout);
+
+        } else {
+            const { lat, lng } = this.#mapEvent.latlng;
+
+            if (type === 'running') {
+                const pace = +inputPace.value;
+
+                if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
+                    return showError('Valid and positive numbers are allowed');
+                }
+
+                workout = new Running([lat, lng], distance, time, pace);
+            } else if (type === 'cycling') {
+                const elevation = +inputElevation.value;
+
+                if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
+                    return showError('Valid and positive numbers are allowed');
+                }
+
+                workout = new Cycling([lat, lng], distance, time, elevation);
+            }
+
+            this.#workouts.push(workout);
+            this._renderWorkout(workout);
+            this._renderWorkoutMarker(workout);
         }
 
         this._hideForm();
         this._setLocalStorage();
         this._toggleDeletionBtn();
     }
+
+
+
 
     _renderWorkoutMarker(workout) {
         const marker = L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
