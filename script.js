@@ -14,6 +14,7 @@ const inputPace = document.querySelector('.form__input--pace');
 const inputElevation = document.querySelector('.form__input--elevation');
 const btnDeleteAll = document.querySelector('.info__btn--deleteAll');
 const deleteAllIcon = document.querySelector('.info__btn--deleteAll__icon');
+const sortControl = document.querySelector('.sort-controls');
 
 const dockDistance = 70;
 let isInfoVisible = false;
@@ -83,7 +84,28 @@ class App {
         btnDeleteAll.addEventListener('click', this.deleteAllActivities.bind(this));
         activities.addEventListener('click', this.deleteActivity.bind(this));
         activities.addEventListener('click', this._editActivity.bind(this));
+        sortControl.addEventListener('click', this._sortWorkouts.bind(this));
         this._getLocalStorage();
+    }
+
+    _sortWorkouts(e) {
+        const sortBy = e.target.dataset.sort;
+        if (!sortBy) return;
+
+        this.#workouts.sort((a, b) => {
+            if (sortBy === 'distance') return a.distance - b.distance;
+            if (sortBy === 'time') return a.time - b.time;
+            if (sortBy === 'pace') return (a.pace || a.calcPace()) - (b.pace || b.calcPace());
+            if (sortBy === 'type') return a.type.localeCompare(b.type);
+        });
+
+        this._clearWorkouts();
+        this.#workouts.forEach(workout => this._renderWorkout(workout));
+    }
+
+    _clearWorkouts() {
+        const workoutElements = document.querySelectorAll('.activity');
+        workoutElements.forEach(workoutEl => workoutEl.remove());
     }
 
     _infoAutoClose() {
@@ -279,9 +301,6 @@ class App {
         this._setLocalStorage();
         this._toggleDeletionBtn();
     }
-
-
-
 
     _renderWorkoutMarker(workout) {
         const marker = L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
