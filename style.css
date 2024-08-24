@@ -463,36 +463,59 @@ body {
 }
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
-/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Error message ╠░░░░░░░░░░░░░░░░░░░░░░░░░ */
+/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Message ╠░░░░░░░░░░░░░░░░░░░░░░░░░ */
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
 
-.error-container {
+.message-container {
     position: fixed;
     top: 7rem;
-    right: 0;
-    background-color: rgba(255, 0, 0);
     color: white;
     padding: 1rem 2rem;
-    border-radius: 5px;
     font-size: 1.8rem;
     opacity: 0;
     z-index: 1000;
-    box-shadow: 0 1px 10px 2px rgb(136, 4, 4);
-    transition: transform 0.5s ease-out, opacity .6s ease-in-out;
+    transition: transform 0.5s ease-out, opacity 0.6s ease-in-out;
 }
 
-.error-container.show {
+.message-container-error {
+    right: 0;
+    background-color: rgba(255, 0, 0, 0.9);
+    border-radius: 5px;
+    box-shadow: 0 1px 10px 2px rgb(136, 4, 4);
+}
+
+.message-container-error.show {
     transform: translateX(-10%);
     opacity: 1;
 }
 
-.error-container.hide {
+.message-container-error.hide {
     transform: translateX(50%);
     opacity: 0;
 }
 
+.message-container-success {
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(29, 165, 29);
+    border-radius: 15px 15px 40px 40px;
+    box-shadow: 0 1px 10px 6px rgb(8, 82, 8);
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+}
+
+.message-container-success.show {
+    transform: translateX(-50%) translateY(-10%);
+    opacity: 1;
+}
+
+.message-container-success.hide {
+    transform: translateX(-50%) translateY(50%);
+    opacity: 0;
+}
+
+
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
-/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Footer ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
+/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Footer ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
 
 .footer {

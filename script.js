@@ -92,7 +92,7 @@ class App {
 
     _fitMapToWorkouts() {
         if (this.#workouts.length === 0) {
-            showError('No workouts to display.');
+            showMessage('No workouts to display.', 'error');
             return;
         }
 
@@ -166,7 +166,7 @@ class App {
     _getPosition() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), () => {
-                showError('Could not get your current position');
+                showMessage('Could not get your current position', 'error');
             });
         }
     }
@@ -274,18 +274,20 @@ class App {
                 const pace = +inputPace.value;
 
                 if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
-                    return showError('Valid and positive numbers are allowed');
+                    return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
                 workout = new Running(coords, distance, time, pace);
+                showMessage('Successfully updated', 'success');
             } else if (type === 'cycling') {
                 const elevation = +inputElevation.value;
 
                 if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
-                    return showError('Valid and positive numbers are allowed');
+                    return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
                 workout = new Cycling(coords, distance, time, elevation);
+                showMessage('Successfully updated', 'success');
             }
 
             workout.id = id;
@@ -306,18 +308,20 @@ class App {
                 const pace = +inputPace.value;
 
                 if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
-                    return showError('Valid and positive numbers are allowed');
+                    return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
                 workout = new Running([lat, lng], distance, time, pace);
+                showMessage('Running activity added', 'success');
             } else if (type === 'cycling') {
                 const elevation = +inputElevation.value;
 
                 if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
-                    return showError('Valid and positive numbers are allowed');
+                    return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
                 workout = new Cycling([lat, lng], distance, time, elevation);
+                showMessage('Cycling activity added', 'success');
             }
 
             this.#workouts.push(workout);
@@ -585,18 +589,38 @@ inputs.forEach(input => {
     });
 });
 
-/***** Error message function ********/
+/***** Message function ********/
 
-function showError(message) {
-    const errorContainer = document.querySelector('.error-container');
-    errorContainer.innerText = message;
-    errorContainer.classList.remove('hide');
-    errorContainer.classList.add('show');
+function showMessage(message, type) {
+    const errorContainer = document.querySelector('.message-container-error');
+    const successContainer = document.querySelector('.message-container-success');
 
-    setTimeout(() => {
+    errorContainer.innerHTML = '';
+    successContainer.innerHTML = '';
+
+    if (type === 'error') {
+        errorContainer.innerHTML = message;
+        errorContainer.classList.remove('hide');
+        errorContainer.classList.add('show');
+        successContainer.classList.remove('show');
+        successContainer.classList.add('hide');
+    } else if (type === 'success') {
+        successContainer.innerHTML = message;
+        successContainer.classList.remove('hide');
+        successContainer.classList.add('show');
         errorContainer.classList.remove('show');
         errorContainer.classList.add('hide');
-    }, 3000);
+    }
+
+    setTimeout(() => {
+        if (type === 'error') {
+            errorContainer.classList.remove('show');
+            errorContainer.classList.add('hide');
+        } else if (type === 'success') {
+            successContainer.classList.remove('show');
+            successContainer.classList.add('hide');
+        }
+    }, 3500);
 }
 
 /***** changing font awesome icons when hovering ********/
