@@ -228,7 +228,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.5rem 1.5rem;
-    height: 9rem;
+    height: auto;
 }
 
 .form__row {
@@ -274,7 +274,22 @@ body {
 }
 
 .form__btn {
-    display: none;
+    grid-column: 1/ -1;
+    text-align: center;
+    padding: .2rem;
+    border: none;
+    margin-top: 1rem;
+    cursor: var(--cursor-point);
+    background-image: linear-gradient(130deg,
+            white 0%,
+            var(--color-blue-logo) 30%);
+    background-size: 300% 100%;
+    border-radius: 1rem;
+    transition: background-position 0.5s ease-in-out;
+}
+
+.form__btn:hover {
+    background-position: 100% 0;
 }
 
 .form.hidden {

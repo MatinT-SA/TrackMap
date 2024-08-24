@@ -461,6 +461,7 @@ class App {
         this.reset();
         this._toggleDeletionBtn();
         this._infoAutoClose();
+        confirm('Are you sure?');
     }
 
     deleteActivity(e) {
