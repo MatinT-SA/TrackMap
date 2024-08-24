@@ -101,7 +101,7 @@ class App {
         );
 
         this.#map.fitBounds(bounds, {
-            padding: [50, 50],
+            padding: [20, 20],
         });
     }
 
