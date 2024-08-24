@@ -461,7 +461,7 @@ class App {
         this.reset();
         this._toggleDeletionBtn();
         this._infoAutoClose();
-        confirm('Are you sure?');
+        showMessage('Deleted all activities', 'success');
     }
 
     deleteActivity(e) {
@@ -477,6 +477,7 @@ class App {
         workoutElement.remove();
         this._removeLayer(workoutId);
         this._infoAutoClose();
+        showMessage('Deleted activity', 'success');
     }
 
     reset() {
