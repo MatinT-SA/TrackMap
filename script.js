@@ -15,6 +15,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 const btnDeleteAll = document.querySelector('.info__btn--deleteAll');
 const deleteAllIcon = document.querySelector('.info__btn--deleteAll__icon');
 const sortControl = document.querySelector('.sort-controls');
+const fitBoundsBtn = document.querySelector('.fit-bounds-btn');
 
 const dockDistance = 70;
 let isInfoVisible = false;
@@ -85,7 +86,23 @@ class App {
         activities.addEventListener('click', this.deleteActivity.bind(this));
         activities.addEventListener('click', this._editActivity.bind(this));
         sortControl.addEventListener('click', this._sortWorkouts.bind(this));
+        fitBoundsBtn.addEventListener('click', this._fitMapToWorkouts.bind(this));
         this._getLocalStorage();
+    }
+
+    _fitMapToWorkouts() {
+        if (this.#workouts.length === 0) {
+            showError('No workouts to display.');
+            return;
+        }
+
+        const bounds = L.latLngBounds(
+            this.#workouts.map(workout => workout.coords)
+        );
+
+        this.#map.fitBounds(bounds, {
+            padding: [50, 50],
+        });
     }
 
     _sortWorkouts(e) {
