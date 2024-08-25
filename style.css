@@ -710,3 +710,69 @@ body {
         top: 3rem;
     }
 }
+
+@media (max-width: 420px) {
+    .logo {
+        height: 9rem;
+    }
+
+    .sort-controls {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        flex: 3;
+    }
+
+    .fit-bound-container {
+        flex: 2;
+    }
+
+    .footer {
+        height: 35vh;
+    }
+
+    #info {
+        height: 60%;
+    }
+
+    .form {
+        padding: 1rem;
+    }
+
+    .activity__details-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .form__input {
+        padding: .5rem;
+        font-size: 1.2rem;
+    }
+
+    .form__label {
+        flex: 0 0 50%;
+        font-size: 1.2rem;
+    }
+
+    .form__label.focused {
+        font-size: 1.3rem;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+    }
+
+    .activity__title {
+        font-size: 1.4rem;
+    }
+
+    .info__btn--deleteAll {
+        left: 1rem;
+    }
+}
+
+@media (max-width: 350px) {
+    #info {
+        height: 55%;
+        min-width: 52%;
+    }
+
+    .logo {
+        height: 7rem;
+    }
+}
