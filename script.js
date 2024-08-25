@@ -528,6 +528,16 @@ info.addEventListener('mousedown', (e) => {
     info.style.cursor = 'grabbing';
 });
 
+info.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    const touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+    initialX = info.offsetLeft;
+    initialY = info.offsetTop;
+    info.style.cursor = 'grabbing';
+});
+
 document.addEventListener('mousemove', (e) => {
     if (isDragging) {
         const dx = e.clientX - startX;
@@ -558,7 +568,61 @@ document.addEventListener('mousemove', (e) => {
     }
 });
 
+document.addEventListener('touchmove', (e) => {
+    if (isDragging) {
+        const touch = e.touches[0]; // Get the first touch point
+        const dx = touch.clientX - startX;
+        const dy = touch.clientY - startY;
+        const newLeft = initialX + dx;
+        const newTop = initialY + dy;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const infoRect = info.getBoundingClientRect();
+        const newRight = newLeft + infoRect.width;
+        const newBottom = newTop + infoRect.height;
+
+        if (newLeft < 0) {
+            info.style.left = '0px';
+        } else if (newRight > viewportWidth) {
+            info.style.left = `${viewportWidth - infoRect.width}px`;
+        } else {
+            info.style.left = `${newLeft}px`;
+        }
+
+        if (newTop < 0) {
+            info.style.top = '0px';
+        } else if (newBottom > viewportHeight) {
+            info.style.top = `${viewportHeight - infoRect.height}px`;
+        } else {
+            info.style.top = `${newTop}px`;
+        }
+    }
+});
+
 document.addEventListener('mouseup', () => {
+    if (isDragging) {
+        const infoRect = info.getBoundingClientRect();
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        if (infoRect.left < dockDistance) {
+            info.style.left = '0px';
+        } else if (viewportWidth - infoRect.right < dockDistance) {
+            info.style.left = `${viewportWidth - infoRect.width}px`;
+        }
+
+        if (infoRect.top < dockDistance) {
+            info.style.top = '0px';
+        } else if (viewportHeight - infoRect.bottom < dockDistance) {
+            info.style.top = `${viewportHeight - infoRect.height}px`;
+        }
+
+        isDragging = false;
+        info.style.cursor = 'move';
+    }
+});
+
+document.addEventListener('touchend', () => {
     if (isDragging) {
         const infoRect = info.getBoundingClientRect();
         const viewportWidth = window.innerWidth;
