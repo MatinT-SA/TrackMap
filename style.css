@@ -650,8 +650,18 @@ body {
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
     }
+
+    .sort-controls {
+        flex: 4;
+    }
+
+    .fit-bound-container {
+        flex: 1;
+    }
 }
 
 @media (max-width: 850px) {
-    .activity {}
+    .activity__actions {
+        margin-bottom: 3rem;
+    }
 }
