@@ -352,59 +352,69 @@ class App {
     _renderWorkout(workout) {
         let html = `
             <li class="activity activity--${workout.type}" data-id="${workout.id}">
-                <button class="delete-activity actions">
-                    <i class="fa fa-trash delete-activity__icon icons"></i>
-                    <div class="tooltip--actions tooltip__delete">Delete</div>
-                </button>
-                <button class="edit-activity actions">
-                    <i class="fa-solid fa-pen edit-activity__icon icons"></i>
-                    <div class="tooltip--actions tooltip__edit">Edit</div>
-                </button>
+                <div class="activity__actions">
+                    <button class="delete-activity actions">
+                        <i class="fa fa-trash delete-activity__icon icons"></i>
+                        <div class="tooltip--actions tooltip__delete">Delete</div>
+                    </button>
+                    <button class="edit-activity actions">
+                        <i class="fa-solid fa-pen edit-activity__icon icons"></i>
+                        <div class="tooltip--actions tooltip__edit">Edit</div>
+                    </button>
+                </div>
                 <h2 class="activity__title">${workout.description}</h2>
-                <div class="activity__details">
-                    <span class="activity__icon">${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}</span>
-                    <span class="activity__value">${workout.distance}</span>
-                    <span class="activity__unit">km</span>
-                </div>
-                <div class="activity__details">
-                    <span class="activity__icon">⏳</span>
-                    <span class="activity__value">${workout.time}</span>
-                    <span class="activity__unit">min</span>
-                </div>
+                
+                <div class="activity__details-wrapper">
+                    <div class="activity__details">
+                        <span class="activity__icon">${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}</span>
+                        <span class="activity__value">${workout.distance}</span>
+                        <span class="activity__unit">km</span>
+                    </div>
+                    <div class="activity__details">
+                        <span class="activity__icon">⏳</span>
+                        <span class="activity__value">${workout.time}</span>
+                        <span class="activity__unit">min</span>
+                    </div>
         `;
 
         if (workout.type === 'running') {
             html += `
-                <div class="activity__details">
-                    <span class="activity__icon">🚀</span>
-                    <span class="activity__value">${workout.paceRunning.toFixed(1)}</span>
-                    <span class="activity__unit">min/km</span>
-                </div>
-                <div class="activity__details">
-                    <span class="activity__icon">👣</span>
-                    <span class="activity__value">${workout.pace}</span>
-                    <span class="activity__unit">spm</span>
-                </div>
-            </li>`;
+                    <div class="activity__details">
+                        <span class="activity__icon">🚀</span>
+                        <span class="activity__value">${workout.paceRunning.toFixed(1)}</span>
+                        <span class="activity__unit">min/km</span>
+                    </div>
+                    <div class="activity__details">
+                        <span class="activity__icon">👣</span>
+                        <span class="activity__value">${workout.pace}</span>
+                        <span class="activity__unit">spm</span>
+                    </div>
+                `;
         }
 
         if (workout.type === 'cycling') {
             html += `
-                <div class="activity__details">
-                    <span class="activity__icon">🚀</span>
-                    <span class="activity__value">${workout.speed.toFixed(1)}</span>
-                    <span class="activity__unit">km/h</span>
-                </div>
-                <div class="activity__details">
-                    <span class="activity__icon">⛰</span>
-                    <span class="activity__value">${workout.elevationGain}</span>
-                    <span class="activity__unit">m</span>
-                </div>
-            </li>`;
+                    <div class="activity__details">
+                        <span class="activity__icon">🚀</span>
+                        <span class="activity__value">${workout.speed.toFixed(1)}</span>
+                        <span class="activity__unit">km/h</span>
+                    </div>
+                    <div class="activity__details">
+                        <span class="activity__icon">⛰</span>
+                        <span class="activity__value">${workout.elevationGain}</span>
+                        <span class="activity__unit">m</span>
+                    </div>
+                `;
         }
+
+        html += `
+            </div> <!-- Close the details wrapper -->
+            </li>`;
 
         form.insertAdjacentHTML('afterend', html);
     }
+
+
 
     _moveToMarker(e) {
         const workoutElement = e.target.closest('.activity');

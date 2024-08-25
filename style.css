@@ -311,13 +311,22 @@ body {
     margin-bottom: 1.5rem;
     overflow-x: auto;
     cursor: var(--cursor-point);
+    display: block;
+    text-align: center;
+    position: relative;
+}
 
+.activity__details-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    text-align: center;
-    gap: 1rem 2rem;
+    justify-items: center;
+    margin: 2rem 0 0;
+}
 
-    position: relative;
+.activity__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
 }
 
 .activity--running {
@@ -331,12 +340,12 @@ body {
 .activity__title {
     font-size: 1.6rem;
     font-weight: 700;
-    grid-column: 1 / 5;
 }
 
 .activity__details {
     display: flex;
     align-items: baseline;
+    text-align: center;
 }
 
 .activity__icon {
@@ -617,6 +626,32 @@ body {
 
 @media (min-width: 1800px) {
     html {
-        font-size: 80%;
+        font-size: 100%;
     }
+}
+
+@media (max-width: 1300px) {
+    html {
+        font-size: 55%;
+    }
+
+    #info {
+        width: 35%;
+    }
+}
+
+@media (max-width: 1000px) {
+    .form {
+        grid-template-columns: 1fr;
+    }
+
+    .activity__details-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 850px) {
+    .activity {}
 }
