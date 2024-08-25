@@ -141,8 +141,8 @@ body {
 
 #close-btn {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 2rem;
+    right: 1rem;
     background: none;
     border: none;
     font-size: 18px;
@@ -681,5 +681,32 @@ body {
         grid-template-columns: 1fr 1fr;
         gap: 2rem;
         margin: 2rem;
+    }
+
+    .info {
+        min-width: 50%;
+    }
+}
+
+@media (max-width: 550px) {
+    .tooltip__deleteAll {
+        display: none;
+        left: rem;
+    }
+
+    #info {
+        padding: .5rem 1rem;
+    }
+
+    .info__btn--deleteAll {
+        left: 2rem;
+    }
+
+    .logo {
+        height: 10rem;
+    }
+
+    #close-btn {
+        top: 3rem;
     }
 }
