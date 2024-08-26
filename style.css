@@ -686,12 +686,15 @@ body {
     .info {
         min-width: 50%;
     }
+
+    .tooltip {
+        display: none !important;
+    }
 }
 
 @media (max-width: 550px) {
     .tooltip__deleteAll {
         display: none;
-        left: rem;
     }
 
     #info {
