@@ -712,6 +712,10 @@ body {
     #close-btn {
         top: 3rem;
     }
+
+    #map {
+        height: 85vh;
+    }
 }
 
 @media (max-width: 420px) {
