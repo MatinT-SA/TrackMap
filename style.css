@@ -771,6 +771,10 @@ body {
     .info__btn--deleteAll {
         left: 1rem;
     }
+
+    .message-container {
+        font-size: 1.5rem;
+    }
 }
 
 @media (max-width: 350px) {
@@ -781,5 +785,9 @@ body {
 
     .logo {
         height: 7rem;
+    }
+
+    .message-container {
+        font-size: 1.3rem;
     }
 }

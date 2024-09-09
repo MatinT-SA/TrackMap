@@ -114,7 +114,7 @@ class App {
             const country = dataGeo.countryCode || 'Unknown country';
 
             if (city === 'Unknown city' && country === 'Unknown country') {
-                throw new Error('Unknown location. Please select a valid one for your workout.');
+                throw new Error('Invalid location for workout');
             }
 
             return `${city} [${country}]`;
@@ -346,7 +346,7 @@ class App {
             const locationDescription = await this._getLocationDescription(lat, lng);
 
             if (locationDescription === 'Unknown location') {
-                showMessage('Unknown location. Please select a valid one for your workout.', 'error');
+                showMessage('Invalid location for workout', 'error');
                 return;
             }
 
