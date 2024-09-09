@@ -27,23 +27,25 @@ class Workout {
     date = new Date();
     id = (Date.now() + '').slice(-10);
 
-    constructor(coords, distance, time) {
+    constructor(coords, distance, time, locationDescription) {
         this.coords = coords;
         this.distance = distance;
         this.time = time;
+        this.locationDescription = locationDescription;
     }
 
     _setDescription() {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
+        this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${months[this.date.getMonth()]} ${this.date.getDate()} in ${this.locationDescription}`;
     }
 }
 
 class Running extends Workout {
     type = 'running';
-    constructor(coords, distance, time, pace) {
+    constructor(coords, distance, time, pace, locationDescription) {
         super(coords, distance, time);
         this.pace = pace;
+        this.locationDescription = locationDescription;
         this.calcPace();
         this._setDescription();
     }
@@ -56,9 +58,10 @@ class Running extends Workout {
 
 class Cycling extends Workout {
     type = 'cycling';
-    constructor(coords, distance, time, elevationGain) {
+    constructor(coords, distance, time, elevationGain, locationDescription) {
         super(coords, distance, time);
         this.elevationGain = elevationGain;
+        this.locationDescription = locationDescription;
         this.calcSpeed();
         this._setDescription();
     }
@@ -78,7 +81,7 @@ class App {
     #markers = {};
 
     constructor() {
-        this._getPosition();
+        this._getPosition().then(pos => this._loadMap(pos)).catch(err => showMessage(err.message, 'error'));
         form.addEventListener('submit', this._newWorkout.bind(this));
         inputType.addEventListener('change', this._toggleElevationInput);
         activities.addEventListener('click', this._moveToMarker.bind(this));
@@ -88,6 +91,26 @@ class App {
         sortControl.addEventListener('click', this._sortWorkouts.bind(this));
         fitBoundsBtn.addEventListener('click', this._fitMapToWorkouts.bind(this));
         this._getLocalStorage();
+    }
+
+    async _getLocationDescription(lat, lng) {
+        try {
+            const resGeo = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat},${lng}&key=a4cf482ec54e410db907e8249dd8759e`);
+            // const resGeo = await fetch(`https://api-bdc.net/data/reverse-geocode?latitude=${lat}&longitude=${lng}&localityLanguage=en&key=bdc_39ee8452eede407482ab31b369ac8ebc`);
+            console.log(resGeo);
+            const dataGeo = await resGeo.json();
+
+            if (!resGeo.ok || dataGeo.results.length === 0) throw new Error('Problem getting location data');
+
+            const components = dataGeo.results[0].components;
+            const city = components.city || components.town || components.village || 'Unknown city';
+            const country = components.country || 'Unknown country';
+
+            return `${city}, ${country}`;
+        } catch (err) {
+            showMessage('Failed to retrieve location', 'error');
+            return 'Unknown location';
+        }
     }
 
     _fitMapToWorkouts() {
@@ -129,8 +152,6 @@ class App {
         this.#workouts.forEach(workout => this._renderWorkout(workout));
     }
 
-
-
     _clearWorkouts() {
         const workoutElements = document.querySelectorAll('.activity');
         workoutElements.forEach(workoutEl => workoutEl.remove());
@@ -165,8 +186,11 @@ class App {
 
     _getPosition() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), () => {
-                showMessage('Could not get your current position', 'error');
+            return new Promise(function (resolve, reject) {
+                navigator.geolocation.getCurrentPosition(
+                    position => resolve(position),
+                    () => reject(new Error('Could not get your current position'))
+                )
             });
         }
     }
@@ -251,7 +275,7 @@ class App {
         this._renderWorkoutMarker(workout);
     }
 
-    _newWorkout(e) {
+    async _newWorkout(e) {
         e.preventDefault();
 
         const isEditing = form.dataset.editId;
@@ -268,7 +292,7 @@ class App {
 
             if (!oldWorkout) return;
 
-            const { id, coords } = oldWorkout;
+            const { id, coords, locationDescription } = oldWorkout;
 
             if (type === 'running') {
                 const pace = +inputPace.value;
@@ -277,7 +301,7 @@ class App {
                     return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
-                workout = new Running(coords, distance, time, pace);
+                workout = new Running(coords, distance, time, pace, locationDescription);
                 showMessage('Successfully updated', 'success');
             } else if (type === 'cycling') {
                 const elevation = +inputElevation.value;
@@ -286,7 +310,7 @@ class App {
                     return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
-                workout = new Cycling(coords, distance, time, elevation);
+                workout = new Cycling(coords, distance, time, elevation, locationDescription);
                 showMessage('Successfully updated', 'success');
             }
 
@@ -304,6 +328,9 @@ class App {
         } else {
             const { lat, lng } = this.#mapEvent.latlng;
 
+            const locationDescription = await this._getLocationDescription(lat, lng);
+            console.log(lat, lng);
+
             if (type === 'running') {
                 const pace = +inputPace.value;
 
@@ -311,7 +338,7 @@ class App {
                     return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
-                workout = new Running([lat, lng], distance, time, pace);
+                workout = new Running([lat, lng], distance, time, pace, locationDescription);
                 showMessage('Running activity added', 'success');
             } else if (type === 'cycling') {
                 const elevation = +inputElevation.value;
@@ -320,7 +347,7 @@ class App {
                     return showMessage('Valid and positive numbers are allowed', 'error');
                 }
 
-                workout = new Cycling([lat, lng], distance, time, elevation);
+                workout = new Cycling([lat, lng], distance, time, elevation, locationDescription);
                 showMessage('Cycling activity added', 'success');
             }
 
@@ -333,6 +360,7 @@ class App {
         this._setLocalStorage();
         this._toggleDeletionBtn();
     }
+
 
     _renderWorkoutMarker(workout) {
         const marker = L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
@@ -413,8 +441,6 @@ class App {
 
         form.insertAdjacentHTML('afterend', html);
     }
-
-
 
     _moveToMarker(e) {
         const workoutElement = e.target.closest('.activity');
