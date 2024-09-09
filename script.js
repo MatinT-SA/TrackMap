@@ -94,24 +94,45 @@ class App {
     }
 
     async _getLocationDescription(lat, lng) {
+        const apiKey = 'bdc_39ee8452eede407482ab31b369ac8ebc'; // Your API key
+        const url = `https://api-bdc.net/data/reverse-geocode?latitude=${lat}&longitude=${lng}&localityLanguage=en&key=${apiKey}`;
+
         try {
-            const resGeo = await fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat},${lng}&key=a4cf482ec54e410db907e8249dd8759e`);
-            // const resGeo = await fetch(`https://api-bdc.net/data/reverse-geocode?latitude=${lat}&longitude=${lng}&localityLanguage=en&key=bdc_39ee8452eede407482ab31b369ac8ebc`);
-            console.log(resGeo);
+            // Fetch data from Big Data Cloud API
+            const resGeo = await fetch(url);
+
+            // Check for HTTP errors
+            if (!resGeo.ok) {
+                throw new Error(`HTTP error! Status: ${resGeo.status}`);
+            }
+
+            // Parse JSON response
             const dataGeo = await resGeo.json();
 
-            if (!resGeo.ok || dataGeo.results.length === 0) throw new Error('Problem getting location data');
+            // Log responses for debugging
+            console.log('Response:', resGeo);
+            console.log('Data:', dataGeo);
 
-            const components = dataGeo.results[0].components;
-            const city = components.city || components.town || components.village || 'Unknown city';
-            const country = components.country || 'Unknown country';
+            // Check if results are present
+            if (!dataGeo) {
+                throw new Error('No results found');
+            }
+
+            // Extract city and country information
+            const city = dataGeo.city || 'Unknown city';
+            const country = dataGeo.countryName || 'Unknown country';
 
             return `${city}, ${country}`;
         } catch (err) {
+            // Enhanced error handling
+            console.error('Error occurred:', err.message);
             showMessage('Failed to retrieve location', 'error');
             return 'Unknown location';
         }
     }
+
+
+
 
     _fitMapToWorkouts() {
         if (this.#workouts.length === 0) {
@@ -188,12 +209,16 @@ class App {
         if (navigator.geolocation) {
             return new Promise(function (resolve, reject) {
                 navigator.geolocation.getCurrentPosition(
-                    position => resolve(position),
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        resolve(position);
+                    },
                     () => reject(new Error('Could not get your current position'))
-                )
+                );
             });
         }
     }
+
 
     _loadMap(position) {
         const { latitude, longitude } = position.coords;
@@ -329,7 +354,6 @@ class App {
             const { lat, lng } = this.#mapEvent.latlng;
 
             const locationDescription = await this._getLocationDescription(lat, lng);
-            console.log(lat, lng);
 
             if (type === 'running') {
                 const pace = +inputPace.value;
