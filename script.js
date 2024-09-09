@@ -94,42 +94,36 @@ class App {
     }
 
     async _getLocationDescription(lat, lng) {
-        const apiKey = 'bdc_39ee8452eede407482ab31b369ac8ebc'; // Your API key
+        const apiKey = 'bdc_39ee8452eede407482ab31b369ac8ebc';
         const url = `https://api-bdc.net/data/reverse-geocode?latitude=${lat}&longitude=${lng}&localityLanguage=en&key=${apiKey}`;
 
         try {
-            // Fetch data from Big Data Cloud API
             const resGeo = await fetch(url);
 
-            // Check for HTTP errors
             if (!resGeo.ok) {
                 throw new Error(`HTTP error! Status: ${resGeo.status}`);
             }
 
-            // Parse JSON response
             const dataGeo = await resGeo.json();
 
-            // Log responses for debugging
-            console.log('Response:', resGeo);
-            console.log('Data:', dataGeo);
-
-            // Check if results are present
-            if (!dataGeo) {
+            if (!dataGeo || !dataGeo.city || !dataGeo.countryName) {
                 throw new Error('No results found');
             }
 
-            // Extract city and country information
             const city = dataGeo.city || 'Unknown city';
             const country = dataGeo.countryName || 'Unknown country';
 
+            if (city === 'Unknown city' && country === 'Unknown country') {
+                throw new Error('Unknown location. Please select a valid one for your workout.');
+            }
+
             return `${city}, ${country}`;
         } catch (err) {
-            // Enhanced error handling
-            console.error('Error occurred:', err.message);
-            showMessage('Failed to retrieve location', 'error');
+            showMessage(err.message, 'error');
             return 'Unknown location';
         }
     }
+
 
 
 
@@ -354,6 +348,11 @@ class App {
             const { lat, lng } = this.#mapEvent.latlng;
 
             const locationDescription = await this._getLocationDescription(lat, lng);
+
+            if (locationDescription === 'Unknown location') {
+                showMessage('Unknown location. Please select a valid one for your workout.', 'error');
+                return;
+            }
 
             if (type === 'running') {
                 const pace = +inputPace.value;
