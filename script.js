@@ -706,6 +706,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editActivityBtns = document.querySelectorAll('.edit-activity');
     const editActivityIcons = document.querySelectorAll('.edit-activity__icon');
 
+    // Loader
+    showLoader();
+
     // deleteActivityBtns
     deleteActivityBtns.forEach((btn, index) => {
         const iconDelete = deleteActivityIcons[index];
@@ -746,3 +749,7 @@ function showLoader() {
 function hideLoader() {
     loaderContainer.style.display = 'none';
 }
+
+window.addEventListener('load', function () {
+    hideLoader();
+})
