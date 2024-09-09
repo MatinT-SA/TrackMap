@@ -16,6 +16,8 @@ const btnDeleteAll = document.querySelector('.info__btn--deleteAll');
 const deleteAllIcon = document.querySelector('.info__btn--deleteAll__icon');
 const sortControl = document.querySelector('.sort-controls');
 const fitBoundsBtn = document.querySelector('.fit-bounds-btn');
+const loader = document.querySelector('.loader');
+const loaderContainer = document.querySelector('.loader-container');
 
 const dockDistance = 70;
 let isInfoVisible = false;
@@ -292,6 +294,7 @@ class App {
 
     async _newWorkout(e) {
         e.preventDefault();
+        showLoader();
 
         const isEditing = form.dataset.editId;
         const type = inputType.value;
@@ -302,84 +305,90 @@ class App {
         const validInputs = (...inputs) => inputs.every(inp => Number.isFinite(inp));
         const positiveInputs = (...inputs) => inputs.every(inp => inp > 0);
 
-        if (isEditing) {
-            let oldWorkout = this.#workouts.find(work => work.id === isEditing);
+        try {
+            if (isEditing) {
+                let oldWorkout = this.#workouts.find(work => work.id === isEditing);
 
-            if (!oldWorkout) return;
+                if (!oldWorkout) return;
 
-            const { id, coords, locationDescription } = oldWorkout;
+                const { id, coords, locationDescription } = oldWorkout;
 
-            if (type === 'running') {
-                const pace = +inputPace.value;
+                if (type === 'running') {
+                    const pace = +inputPace.value;
 
-                if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
-                    return showMessage('Valid and positive numbers are allowed', 'error');
+                    if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
+                        return showMessage('Valid and positive numbers are allowed', 'error');
+                    }
+
+                    workout = new Running(coords, distance, time, pace, locationDescription);
+                    showMessage('Successfully updated', 'success');
+                } else if (type === 'cycling') {
+                    const elevation = +inputElevation.value;
+
+                    if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
+                        return showMessage('Valid and positive numbers are allowed', 'error');
+                    }
+
+                    workout = new Cycling(coords, distance, time, elevation, locationDescription);
+                    showMessage('Successfully updated', 'success');
                 }
 
-                workout = new Running(coords, distance, time, pace, locationDescription);
-                showMessage('Successfully updated', 'success');
-            } else if (type === 'cycling') {
-                const elevation = +inputElevation.value;
+                workout.id = id;
 
-                if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
-                    return showMessage('Valid and positive numbers are allowed', 'error');
+                const index = this.#workouts.findIndex(work => work.id === isEditing);
+                this.#workouts[index] = workout;
+
+                this._removeLayer(workout.id);
+                this._renderWorkoutMarker(workout);
+
+                document.querySelector(`[data-id="${workout.id}"]`).remove();
+                this._renderWorkout(workout);
+
+            } else {
+                const { lat, lng } = this.#mapEvent.latlng;
+
+                const locationDescription = await this._getLocationDescription(lat, lng);
+
+                if (locationDescription === 'Unknown location') {
+                    showMessage('Invalid location for workout', 'error');
+                    return;
                 }
 
-                workout = new Cycling(coords, distance, time, elevation, locationDescription);
-                showMessage('Successfully updated', 'success');
+                if (type === 'running') {
+                    const pace = +inputPace.value;
+
+                    if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
+                        return showMessage('Valid and positive numbers are allowed', 'error');
+                    }
+
+                    workout = new Running([lat, lng], distance, time, pace, locationDescription);
+                    showMessage('Running activity added', 'success');
+                } else if (type === 'cycling') {
+                    const elevation = +inputElevation.value;
+
+                    if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
+                        return showMessage('Valid and positive numbers are allowed', 'error');
+                    }
+
+                    workout = new Cycling([lat, lng], distance, time, elevation, locationDescription);
+                    showMessage('Cycling activity added', 'success');
+                }
+
+                this.#workouts.push(workout);
+                this._renderWorkout(workout);
+                this._renderWorkoutMarker(workout);
             }
 
-            workout.id = id;
-
-            const index = this.#workouts.findIndex(work => work.id === isEditing);
-            this.#workouts[index] = workout;
-
-            this._removeLayer(workout.id);
-            this._renderWorkoutMarker(workout);
-
-            document.querySelector(`[data-id="${workout.id}"]`).remove();
-            this._renderWorkout(workout);
-
-        } else {
-            const { lat, lng } = this.#mapEvent.latlng;
-
-            const locationDescription = await this._getLocationDescription(lat, lng);
-
-            if (locationDescription === 'Unknown location') {
-                showMessage('Invalid location for workout', 'error');
-                return;
-            }
-
-            if (type === 'running') {
-                const pace = +inputPace.value;
-
-                if (!validInputs(distance, time, pace) || !positiveInputs(distance, time, pace)) {
-                    return showMessage('Valid and positive numbers are allowed', 'error');
-                }
-
-                workout = new Running([lat, lng], distance, time, pace, locationDescription);
-                showMessage('Running activity added', 'success');
-            } else if (type === 'cycling') {
-                const elevation = +inputElevation.value;
-
-                if (!validInputs(distance, time, elevation) || !positiveInputs(distance, time)) {
-                    return showMessage('Valid and positive numbers are allowed', 'error');
-                }
-
-                workout = new Cycling([lat, lng], distance, time, elevation, locationDescription);
-                showMessage('Cycling activity added', 'success');
-            }
-
-            this.#workouts.push(workout);
-            this._renderWorkout(workout);
-            this._renderWorkoutMarker(workout);
+            this._hideForm();
+            this._setLocalStorage();
+            this._toggleDeletionBtn();
+        } catch (err) {
+            showMessage(err.message, 'error');
         }
-
-        this._hideForm();
-        this._setLocalStorage();
-        this._toggleDeletionBtn();
+        finally {
+            hideLoader();
+        }
     }
-
 
     _renderWorkoutMarker(workout) {
         const marker = L.marker(workout.coords, { riseOnHover: true }).addTo(this.#map)
@@ -727,3 +736,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+/***** Loader ********/
+
+function showLoader() {
+    loaderContainer.style.display = 'flex';
+}
+
+function hideLoader() {
+    loaderContainer.style.display = 'none';
+}
