@@ -111,22 +111,18 @@ class App {
             }
 
             const city = dataGeo.city || 'Unknown city';
-            const country = dataGeo.countryName || 'Unknown country';
+            const country = dataGeo.countryCode || 'Unknown country';
 
             if (city === 'Unknown city' && country === 'Unknown country') {
                 throw new Error('Unknown location. Please select a valid one for your workout.');
             }
 
-            return `${city}, ${country}`;
+            return `${city} [${country}]`;
         } catch (err) {
             showMessage(err.message, 'error');
             return 'Unknown location';
         }
     }
-
-
-
-
 
     _fitMapToWorkouts() {
         if (this.#workouts.length === 0) {
