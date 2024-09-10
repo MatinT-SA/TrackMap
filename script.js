@@ -123,12 +123,10 @@ class App {
                 throw new Error('Location not found');
             }
 
-            this.#map.setView([lat, lng], this.#mapZoomLevel, {
-                animation: true,
-                pan: {
-                    duration: 1,
-                    easeLinearity: 0.4
-                }
+            this.#map.flyTo([lat, lng], this.#mapZoomLevel, {
+                animate: true,
+                duration: 4,
+                easeLinearity: 0.2
             });
 
             showMessage(`Location found: ${query}`, 'success');
