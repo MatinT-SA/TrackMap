@@ -19,6 +19,9 @@ const fitBoundsBtn = document.querySelector('.fit-bounds-btn');
 const loader = document.querySelector('.loader');
 const loaderContainer = document.querySelector('.loader-container');
 
+const searchBox = document.getElementById('search-box');
+const searchBtn = document.getElementById('search-btn');
+
 const dockDistance = 70;
 let isInfoVisible = false;
 
@@ -92,8 +95,51 @@ class App {
         activities.addEventListener('click', this._editActivity.bind(this));
         sortControl.addEventListener('click', this._sortWorkouts.bind(this));
         fitBoundsBtn.addEventListener('click', this._fitMapToWorkouts.bind(this));
+        searchBtn.addEventListener('click', this._searchLocation.bind(this));
         this._getLocalStorage();
     }
+
+    async _searchLocation() {
+        const query = searchBox.value.trim();
+        if (!query) {
+            showMessage('Please enter a location to search', 'error');
+            return;
+        }
+
+        showLoader();
+
+        try {
+            const apiKey = '15c4877abd844b589892ca67ffe7541f'; // Use your OpenCage API key
+            const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=${apiKey}`;
+            const res = await fetch(url);
+
+            if (!res.ok) {
+                throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+
+            const data = await res.json();
+            const { lat, lng } = data.results[0].geometry;
+
+            if (!lat || !lng) {
+                throw new Error('Location not found');
+            }
+
+            this.#map.setView([lat, lng], this.#mapZoomLevel, {
+                animation: true,
+                pan: {
+                    duration: 1,
+                    easeLinearity: 0.4
+                }
+            });
+
+            showMessage(`Location found: ${query}`, 'success');
+        } catch (err) {
+            showMessage(err.message, 'error');
+        } finally {
+            hideLoader();
+        }
+    }
+
 
     async _getLocationDescription(lat, lng) {
         const apiKey = 'bdc_39ee8452eede407482ab31b369ac8ebc';
