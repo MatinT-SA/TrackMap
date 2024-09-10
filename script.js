@@ -117,6 +117,11 @@ class App {
             }
 
             const data = await res.json();
+
+            if (!data.results || data.results.length === 0) {
+                throw new Error('Location not found');
+            }
+
             const { lat, lng } = data.results[0].geometry;
 
             if (!lat || !lng) {
