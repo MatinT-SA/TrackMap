@@ -142,6 +142,8 @@ class App {
                 easeLinearity: 0.2
             });
 
+            searchBox.value = '';
+
             showMessage(`Location found: ${query}`, 'success');
         } catch (err) {
             showMessage(err.message, 'error');
