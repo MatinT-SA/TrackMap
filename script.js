@@ -18,7 +18,6 @@ const sortControl = document.querySelector('.sort-controls');
 const fitBoundsBtn = document.querySelector('.fit-bounds-btn');
 const loader = document.querySelector('.loader');
 const loaderContainer = document.querySelector('.loader-container');
-
 const searchBox = document.getElementById('search-box');
 const searchBtn = document.getElementById('search-btn');
 
@@ -109,7 +108,7 @@ class App {
         showLoader();
 
         try {
-            const apiKey = '15c4877abd844b589892ca67ffe7541f'; // Use your OpenCage API key
+            const apiKey = '15c4877abd844b589892ca67ffe7541f';
             const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=${apiKey}`;
             const res = await fetch(url);
 
@@ -621,8 +620,8 @@ let startX, startY, initialX, initialY;
 
 const handleDragStart = (e) => {
     isDragging = true;
-    startX = e.clientX || e.touches[0].clientX;
-    startY = e.clientY || e.touches[0].clientY;
+    startX = (e.clientX !== undefined ? e.clientX : e.touches[0].clientX);
+    startY = (e.clientY !== undefined ? e.clientY : e.touches[0].clientY);
     initialX = info.offsetLeft;
     initialY = info.offsetTop;
     info.style.cursor = 'grabbing';
@@ -631,8 +630,12 @@ const handleDragStart = (e) => {
 const handleDragMove = (e) => {
     if (!isDragging) return;
 
-    const clientX = e.clientX || e.touches[0].clientX;
-    const clientY = e.clientY || e.touches[0].clientY;
+    const clientX = (e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0].clientX));
+    const clientY = (e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0].clientY));
+
+    // Ensure clientX and clientY are valid
+    if (clientX === undefined || clientY === undefined) return;
+
     const dx = clientX - startX;
     const dy = clientY - startY;
     const newLeft = initialX + dx;
