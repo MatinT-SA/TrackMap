@@ -95,6 +95,14 @@ class App {
         sortControl.addEventListener('click', this._sortWorkouts.bind(this));
         fitBoundsBtn.addEventListener('click', this._fitMapToWorkouts.bind(this));
         searchBtn.addEventListener('click', this._searchLocation.bind(this));
+
+        searchBox.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this._searchLocation();
+            }
+        }.bind(this));
+
         this._getLocalStorage();
     }
 
