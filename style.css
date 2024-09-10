@@ -19,6 +19,9 @@
     --color-green-second: rgb(15, 144, 26);
     --color-blue-logo: #98E0CB;
     --color-blue-secondary: #c8eee2;
+    --color-orange-first: rgb(195, 141, 39);
+    --color-orange-second: rgb(212, 160, 64);
+    --color-orange-third: rgb(154, 106, 16);
 
     --cursor-point: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"%3E%3Cpath fill="%23FFFFFF" stroke="%23808080" stroke-width="2.5" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"%3E%3C/path%3E%3C/svg%3E'), auto;
 }
@@ -681,16 +684,16 @@ body {
     border: none;
     outline: none;
     border-radius: 10px;
-    padding: 1rem 2rem;
-    width: 60%;
+    padding: 1rem 1.5rem;
+    width: 70%;
     font-size: 1.4rem;
-    background-color: rgb(195, 141, 39);
+    background-color: var(--color-orange-first);
     color: white;
     transition: .3s all ease-in;
 }
 
 #search-box:hover {
-    background-color: rgb(212, 160, 64);
+    background-color: var(--color-orange-second);
 }
 
 #search-box::placeholder {
@@ -698,27 +701,28 @@ body {
 }
 
 #search-box:focus {
-    background-color: rgb(154, 106, 16);
+    background-color: var(--color-orange-third);
     transform: scale(1.02);
 }
 
 #search-btn {
     text-align: center;
-    padding: .5rem 1rem;
+    padding: .5rem 1.25rem;
     font-size: 2rem;
     border: none;
     cursor: var(--cursor-point);
-    background-color: rgb(195, 141, 39);
+    background-color: var(--color-orange-first);
     background-size: 300% 100%;
     border-radius: 5px;
     transition: 0.3s all ease-in;
 }
 
 #search-btn:hover {
-    background-color: rgb(212, 160, 64);
+    background-color: var(--color-orange-second);
 }
 
 #search-btn:active {
+    background-color: var(--color-orange-third);
     transform: scale(0.95);
 }
 

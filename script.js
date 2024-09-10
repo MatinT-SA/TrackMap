@@ -629,7 +629,20 @@ const hideInfo = () => {
 let isDragging = false;
 let startX, startY, initialX, initialY;
 
+const checkIfInsideSearchBox = (x, y) => {
+    const searchBoxRect = searchBox.getBoundingClientRect();
+    return x >= searchBoxRect.left &&
+        x <= searchBoxRect.right &&
+        y >= searchBoxRect.top &&
+        y <= searchBoxRect.bottom;
+};
+
 const handleDragStart = (e) => {
+    if (checkIfInsideSearchBox(e.clientX, e.clientY)) {
+        isDragging = false;
+        return;
+    }
+
     isDragging = true;
     startX = (e.clientX !== undefined ? e.clientX : e.touches[0].clientX);
     startY = (e.clientY !== undefined ? e.clientY : e.touches[0].clientY);
@@ -644,8 +657,12 @@ const handleDragMove = (e) => {
     const clientX = (e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0].clientX));
     const clientY = (e.clientY !== undefined ? e.clientY : (e.touches && e.touches[0].clientY));
 
-    // Ensure clientX and clientY are valid
     if (clientX === undefined || clientY === undefined) return;
+
+    if (checkIfInsideSearchBox(clientX, clientY)) {
+        isDragging = false;
+        return;
+    }
 
     const dx = clientX - startX;
     const dy = clientY - startY;
@@ -692,6 +709,18 @@ document.addEventListener('touchmove', handleDragMove);
 
 document.addEventListener('mouseup', handleDragEnd);
 document.addEventListener('touchend', handleDragEnd);
+
+searchBox.addEventListener('mousedown', () => {
+    isDragging = false;
+});
+
+searchBox.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+searchBox.addEventListener('mousemove', () => {
+    isDragging = false;
+});
 
 closeButton.addEventListener('click', hideInfo);
 
