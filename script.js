@@ -122,6 +122,7 @@ class App {
         this._getLocalStorage();
     }
 
+    /***** Search Location ********/
     _handleKeyDown(event) {
         const suggestions = document.querySelectorAll('.suggestion-item');
         const query = searchBox.value.trim();
@@ -144,7 +145,6 @@ class App {
                 this._highlightSuggestion(suggestions);
                 break;
             case 'Enter':
-                // Check if query length is less than 2 characters
                 if (query.length < 2) {
                     showMessage('At least 2 characters required', 'error');
                     return;
@@ -160,9 +160,6 @@ class App {
 
                     suggestionsContainer.innerHTML = '';
                     suggestionsContainer.style.display = 'none';
-
-                    // Show success message if input length is sufficient
-                    showMessage('Location found', 'success');
                 }
                 break;
             case 'Escape':
@@ -171,8 +168,6 @@ class App {
                 break;
         }
     }
-
-
 
     _highlightSuggestion(suggestions) {
         suggestions.forEach(item => item.classList.remove('highlight'));
@@ -200,7 +195,7 @@ class App {
 
         try {
             const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+            if (!res.ok) throw new Error(`Something went wrong`);
 
             const data = await res.json();
             return data.map(suggestion => ({
@@ -221,7 +216,6 @@ class App {
             return;
         }
 
-        // Add a check for the minimum number of characters
         if (query.length < 2) {
             showMessage('At least 2 characters required', 'error');
             return;
@@ -271,7 +265,6 @@ class App {
         }
     }
 
-
     _displaySuggestions(suggestions) {
         suggestionsContainer.innerHTML = '';
         this._currentSuggestionIndex = -1;
@@ -305,7 +298,6 @@ class App {
 
         suggestionsContainer.style.display = 'block';
     }
-
 
     async _getLocationDescription(lat, lng) {
         const apiKey = 'bdc_39ee8452eede407482ab31b369ac8ebc';
@@ -414,7 +406,6 @@ class App {
             return new Promise(function (resolve, reject) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
-                        const { latitude, longitude } = position.coords;
                         resolve(position);
                     },
                     () => reject(new Error('Could not get your current position'))
@@ -422,7 +413,6 @@ class App {
             });
         }
     }
-
 
     _loadMap(position) {
         const { latitude, longitude } = position.coords;
