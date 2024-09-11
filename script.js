@@ -115,7 +115,17 @@ class App {
             }
         });
 
+        this._searchInitiatedManually = false;
+
         this._getLocalStorage();
+    }
+
+    _flyToLocation(lat, lon) {
+        this.#map.flyTo([lat, lon], this.#mapZoomLevel, {
+            animate: true,
+            duration: 4,
+            easeLinearity: 0.2
+        });
     }
 
     async _fetchSuggestions(query) {
@@ -131,6 +141,7 @@ class App {
             if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
             const data = await res.json();
+            console.log(data);
             return data.map(suggestion => ({
                 displayName: suggestion.display_name,
                 lat: suggestion.lat,
@@ -172,15 +183,15 @@ class App {
                 throw new Error('Location not found');
             }
 
-            this.#map.flyTo([lat, lng], this.#mapZoomLevel, {
-                animate: true,
-                duration: 4,
-                easeLinearity: 0.2
-            });
+            this._flyToLocation(lat, lon);
 
             searchBox.value = '';
 
-            showMessage(`Location found: ${query}`, 'success');
+            if (this._searchInitiatedManually) {
+                showMessage('Location found', 'success');
+            } else {
+                showMessage(`Location found: ${query}`, 'success');
+            }
         } catch (err) {
             showMessage(err.message, 'error');
         } finally {
@@ -191,49 +202,46 @@ class App {
         }
     }
 
-
     _displaySuggestions(suggestions) {
-        // Debug: Log the suggestions to verify they're being passed correctly
-        console.log('Suggestions:', suggestions);
-
         // Clear previous suggestions
         suggestionsContainer.innerHTML = '';
 
-        // Check if there are suggestions
         if (suggestions.length === 0) {
             suggestionsContainer.innerHTML = '<p>No suggestions found</p>';
             return;
         }
 
-        // Create HTML for each suggestion item
+        // Create HTML for suggestions
         suggestionsContainer.innerHTML = suggestions.map(suggestion => `
             <div class="suggestion-item" data-lat="${suggestion.lat}" data-lon="${suggestion.lon}">
-                ${suggestion.display_name}
+                ${suggestion.displayName}
             </div>
         `).join('');
 
-        // Add click event listeners for each suggestion item
+        // Add click event listeners for each suggestion
         suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', () => {
+            item.addEventListener('click', function () {
                 const lat = item.getAttribute('data-lat');
                 const lon = item.getAttribute('data-lon');
 
-                // Set the search box value to the suggestion's name
-                searchBox.value = item.textContent;
+                // Set the flag to false since this is a suggestion-based selection
+                this._searchInitiatedManually = false;
 
-                // Call flyTo with the selected location's coordinates
-                this._flyToLocation(lat, lon);
-            });
+                // Call _flyToLocation or the actual flyTo function
+                this._flyToLocation(lat, lon); // Ensure the map moves to the selected suggestion's location
+
+                // Clear suggestions
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.style.display = 'none';
+
+                // Show a success message without the query
+                showMessage('Location found', 'success');
+            }.bind(this)); // Explicitly bind 'this' to the class instance
         });
 
         // Make sure to display the suggestions container
         suggestionsContainer.style.display = 'block';
     }
-
-
-
-
-
 
 
     async _getLocationDescription(lat, lng) {
