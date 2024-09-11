@@ -20,6 +20,7 @@ const loader = document.querySelector('.loader');
 const loaderContainer = document.querySelector('.loader-container');
 const searchBox = document.getElementById('search-box');
 const searchBtn = document.getElementById('search-btn');
+const suggestionsContainer = document.querySelector('.suggestions-box');
 
 const dockDistance = 70;
 let isInfoVisible = false;
@@ -96,14 +97,49 @@ class App {
         fitBoundsBtn.addEventListener('click', this._fitMapToWorkouts.bind(this));
         searchBtn.addEventListener('click', this._searchLocation.bind(this));
 
-        searchBox.addEventListener('keydown', function (e) {
+        // New event listeners for search functionality
+        searchBox.addEventListener('input', async () => {
+            const query = searchBox.value.trim();
+            if (query) {
+                const suggestions = await this._fetchSuggestions(query);
+                this._displaySuggestions(suggestions);
+            } else {
+                document.getElementById('suggestions').innerHTML = '';
+            }
+        });
+
+        searchBox.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 this._searchLocation();
             }
-        }.bind(this));
+        });
 
         this._getLocalStorage();
+    }
+
+    async _fetchSuggestions(query) {
+        if (!query) {
+            suggestionsContainer.style.display = 'none';
+            return [];
+        }
+
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`;
+
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+            const data = await res.json();
+            return data.map(suggestion => ({
+                displayName: suggestion.display_name,
+                lat: suggestion.lat,
+                lon: suggestion.lon
+            }));
+        } catch (err) {
+            console.error('Error fetching suggestions:', err);
+            return [];
+        }
     }
 
     async _searchLocation() {
@@ -121,7 +157,7 @@ class App {
             const res = await fetch(url);
 
             if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
+                throw new Error(`Something went wrong`);
             }
 
             const data = await res.json();
@@ -149,8 +185,55 @@ class App {
             showMessage(err.message, 'error');
         } finally {
             hideLoader();
+            setTimeout(() => {
+                suggestionsContainer.style.display = 'none';
+            }, 4000);
         }
     }
+
+
+    _displaySuggestions(suggestions) {
+        // Debug: Log the suggestions to verify they're being passed correctly
+        console.log('Suggestions:', suggestions);
+
+        // Clear previous suggestions
+        suggestionsContainer.innerHTML = '';
+
+        // Check if there are suggestions
+        if (suggestions.length === 0) {
+            suggestionsContainer.innerHTML = '<p>No suggestions found</p>';
+            return;
+        }
+
+        // Create HTML for each suggestion item
+        suggestionsContainer.innerHTML = suggestions.map(suggestion => `
+            <div class="suggestion-item" data-lat="${suggestion.lat}" data-lon="${suggestion.lon}">
+                ${suggestion.display_name}
+            </div>
+        `).join('');
+
+        // Add click event listeners for each suggestion item
+        suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const lat = item.getAttribute('data-lat');
+                const lon = item.getAttribute('data-lon');
+
+                // Set the search box value to the suggestion's name
+                searchBox.value = item.textContent;
+
+                // Call flyTo with the selected location's coordinates
+                this._flyToLocation(lat, lon);
+            });
+        });
+
+        // Make sure to display the suggestions container
+        suggestionsContainer.style.display = 'block';
+    }
+
+
+
+
+
 
 
     async _getLocationDescription(lat, lng) {

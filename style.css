@@ -733,25 +733,52 @@ body {
     color: white;
 }
 
-/* .suggestions-box {
+/* Search suggestion */
+.search-container {
+    position: relative;
+}
+
+#search-box {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+#search-btn {
     position: absolute;
-    background-color: white;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 0 10px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+#suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
     border: 1px solid #ccc;
+    border-top: none;
+    background: white;
+    z-index: 1000;
     max-height: 200px;
     overflow-y: auto;
-    z-index: 1000;
-    width: 100%;
+    display: none;
+    /* Hide initially */
 }
 
-.suggestions-box div {
+.suggestion-item {
     padding: 10px;
     cursor: pointer;
-    border-bottom: 1px solid #ddd;
 }
 
-.suggestions-box div:hover {
+.suggestion-item:hover {
     background-color: #f0f0f0;
-} */
+}
+
 
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
