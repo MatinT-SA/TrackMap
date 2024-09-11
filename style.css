@@ -299,7 +299,7 @@ body {
 }
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
-/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Activity ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
+/* ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Activity ╠░░░░░░░░░░░░░░░░░░░░░░░░░░░░ */
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
 
 .activity {
@@ -755,11 +755,17 @@ body {
     text-align: center;
     border-radius: 0px 0px 1rem 1rem;
     color: white;
+    font-size: 1.2rem;
 }
 
 .suggestion-item {
     padding: 1rem;
     cursor: var(--cursor-point);
+    border-bottom: 2px solid rgb(165, 108, 1);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
 }
 
 .suggestion-item:hover {
@@ -924,6 +930,10 @@ body {
 
     .message-container {
         font-size: 1.5rem;
+    }
+
+    #suggestions {
+        font-size: 1.1rem;
     }
 }
 
