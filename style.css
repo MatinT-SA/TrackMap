@@ -690,6 +690,7 @@ body {
     background-color: var(--color-orange-first);
     color: white;
     transition: .3s all ease-in;
+    text-align: center;
 }
 
 #search-box:hover {
@@ -700,7 +701,8 @@ body {
     color: white;
 }
 
-#search-box:active #search-box:focus {
+#search-box:active,
+#search-box:focus {
     background-color: var(--color-orange-third);
     transform: scale(1.02);
 }
@@ -738,23 +740,6 @@ body {
     position: relative;
 }
 
-#search-box {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-#search-btn {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    padding: 0 10px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-}
-
 #suggestions {
     position: absolute;
     top: 100%;
@@ -767,7 +752,7 @@ body {
     max-height: 200px;
     overflow-y: auto;
     display: none;
-    /* Hide initially */
+    text-align: center;
 }
 
 .suggestion-item {
@@ -779,7 +764,10 @@ body {
     background-color: #f0f0f0;
 }
 
-
+.suggestion-item.highlight {
+    background-color: #d3d3d3;
+    /* Light grey highlight */
+}
 
 /* ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ */
 /* ░░░░░░░░░░░░░░░░░░░░░░░░░░░╣ Responsiveness ╠░░░░░░░░░░░░░░░░░░░░░░░░ */

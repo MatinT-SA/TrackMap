@@ -96,6 +96,7 @@ class App {
         sortControl.addEventListener('click', this._sortWorkouts.bind(this));
         fitBoundsBtn.addEventListener('click', this._fitMapToWorkouts.bind(this));
         searchBtn.addEventListener('click', this._searchLocation.bind(this));
+        searchBox.addEventListener('keydown', this._handleKeyDown.bind(this));
 
         // New event listeners for search functionality
         searchBox.addEventListener('input', async () => {
@@ -117,7 +118,66 @@ class App {
 
         this._searchInitiatedManually = false;
 
+        this._currentSuggestionIndex = -1;
+
         this._getLocalStorage();
+    }
+
+    _handleKeyDown(event) {
+        const suggestions = document.querySelectorAll('.suggestion-item');
+
+        // If no suggestions, ignore
+        if (suggestions.length === 0) return;
+
+        switch (event.key) {
+            case 'ArrowDown':
+                // Move down the list
+                this._currentSuggestionIndex++;
+                if (this._currentSuggestionIndex >= suggestions.length) {
+                    this._currentSuggestionIndex = 0; // Loop back to the start
+                }
+                this._highlightSuggestion(suggestions);
+                break;
+            case 'ArrowUp':
+                // Move up the list
+                this._currentSuggestionIndex--;
+                if (this._currentSuggestionIndex < 0) {
+                    this._currentSuggestionIndex = suggestions.length - 1; // Loop back to the end
+                }
+                this._highlightSuggestion(suggestions);
+                break;
+            case 'Enter':
+                // Select the highlighted suggestion
+                if (this._currentSuggestionIndex > -1) {
+                    const selectedSuggestion = suggestions[this._currentSuggestionIndex];
+                    const lat = selectedSuggestion.getAttribute('data-lat');
+                    const lon = selectedSuggestion.getAttribute('data-lon');
+
+                    this._searchInitiatedManually = false;
+                    this._flyToLocation(lat, lon);
+
+                    suggestionsContainer.innerHTML = '';
+                    suggestionsContainer.style.display = 'none';
+
+                    showMessage('Location found', 'success');
+                }
+                break;
+            case 'Escape':
+                // Hide suggestions on Escape
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.style.display = 'none';
+                break;
+        }
+    }
+
+    _highlightSuggestion(suggestions) {
+        // Remove previous highlights
+        suggestions.forEach(item => item.classList.remove('highlight'));
+
+        // Highlight the current suggestion
+        if (this._currentSuggestionIndex > -1) {
+            suggestions[this._currentSuggestionIndex].classList.add('highlight');
+        }
     }
 
     _flyToLocation(lat, lon) {
@@ -141,14 +201,13 @@ class App {
             if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
             const data = await res.json();
-            console.log(data);
             return data.map(suggestion => ({
                 displayName: suggestion.display_name,
                 lat: suggestion.lat,
                 lon: suggestion.lon
             }));
         } catch (err) {
-            console.error('Error fetching suggestions:', err);
+            showLoader('Suggestion failed', 'error');
             return [];
         }
     }
@@ -177,13 +236,15 @@ class App {
                 throw new Error('Location not found');
             }
 
+            console.log(data);
+
             const { lat, lng } = data.results[0].geometry;
 
             if (!lat || !lng) {
                 throw new Error('Location not found');
             }
 
-            this._flyToLocation(lat, lon);
+            this._flyToLocation(lat, lng);
 
             searchBox.value = '';
 
@@ -203,8 +264,8 @@ class App {
     }
 
     _displaySuggestions(suggestions) {
-        // Clear previous suggestions
         suggestionsContainer.innerHTML = '';
+        this._currentSuggestionIndex = -1;
 
         if (suggestions.length === 0) {
             suggestionsContainer.innerHTML = '<p>No suggestions found</p>';
