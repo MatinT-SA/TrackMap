@@ -227,6 +227,8 @@ class App {
             return;
         }
 
+        this._searchInitiatedManually = true;
+
         showLoader();
 
         try {
@@ -255,9 +257,9 @@ class App {
             searchBox.value = '';
 
             if (this._searchInitiatedManually) {
-                showMessage('Location found', 'success');
-            } else {
                 showMessage(`Location found: ${query}`, 'success');
+            } else {
+                showMessage('Location found', 'success');
             }
         } catch (err) {
             showMessage(err.message, 'error');
