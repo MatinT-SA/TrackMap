@@ -98,7 +98,6 @@ class App {
         searchBtn.addEventListener('click', this._searchLocation.bind(this));
         searchBox.addEventListener('keydown', this._handleKeyDown.bind(this));
 
-        // New event listeners for search functionality
         searchBox.addEventListener('input', async () => {
             const query = searchBox.value.trim();
             if (query) {
@@ -125,29 +124,32 @@ class App {
 
     _handleKeyDown(event) {
         const suggestions = document.querySelectorAll('.suggestion-item');
+        const query = searchBox.value.trim();
 
-        // If no suggestions, ignore
         if (suggestions.length === 0) return;
 
         switch (event.key) {
             case 'ArrowDown':
-                // Move down the list
                 this._currentSuggestionIndex++;
                 if (this._currentSuggestionIndex >= suggestions.length) {
-                    this._currentSuggestionIndex = 0; // Loop back to the start
+                    this._currentSuggestionIndex = 0;
                 }
                 this._highlightSuggestion(suggestions);
                 break;
             case 'ArrowUp':
-                // Move up the list
                 this._currentSuggestionIndex--;
                 if (this._currentSuggestionIndex < 0) {
-                    this._currentSuggestionIndex = suggestions.length - 1; // Loop back to the end
+                    this._currentSuggestionIndex = suggestions.length - 1;
                 }
                 this._highlightSuggestion(suggestions);
                 break;
             case 'Enter':
-                // Select the highlighted suggestion
+                // Check if query length is less than 2 characters
+                if (query.length < 2) {
+                    showMessage('At least 2 characters required', 'error');
+                    return;
+                }
+
                 if (this._currentSuggestionIndex > -1) {
                     const selectedSuggestion = suggestions[this._currentSuggestionIndex];
                     const lat = selectedSuggestion.getAttribute('data-lat');
@@ -159,22 +161,22 @@ class App {
                     suggestionsContainer.innerHTML = '';
                     suggestionsContainer.style.display = 'none';
 
+                    // Show success message if input length is sufficient
                     showMessage('Location found', 'success');
                 }
                 break;
             case 'Escape':
-                // Hide suggestions on Escape
                 suggestionsContainer.innerHTML = '';
                 suggestionsContainer.style.display = 'none';
                 break;
         }
     }
 
+
+
     _highlightSuggestion(suggestions) {
-        // Remove previous highlights
         suggestions.forEach(item => item.classList.remove('highlight'));
 
-        // Highlight the current suggestion
         if (this._currentSuggestionIndex > -1) {
             suggestions[this._currentSuggestionIndex].classList.add('highlight');
         }
@@ -219,10 +221,16 @@ class App {
             return;
         }
 
+        // Add a check for the minimum number of characters
+        if (query.length < 2) {
+            showMessage('At least 2 characters required', 'error');
+            return;
+        }
+
         showLoader();
 
         try {
-            const apiKey = '15c4877abd844b589892ca67ffe7541f';
+            const apiKey = 'e361d327553c4955bab6f9ba66aec393';
             const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(query)}&key=${apiKey}`;
             const res = await fetch(url);
 
@@ -235,8 +243,6 @@ class App {
             if (!data.results || data.results.length === 0) {
                 throw new Error('Location not found');
             }
-
-            console.log(data);
 
             const { lat, lng } = data.results[0].geometry;
 
@@ -263,6 +269,7 @@ class App {
         }
     }
 
+
     _displaySuggestions(suggestions) {
         suggestionsContainer.innerHTML = '';
         this._currentSuggestionIndex = -1;
@@ -272,35 +279,28 @@ class App {
             return;
         }
 
-        // Create HTML for suggestions
         suggestionsContainer.innerHTML = suggestions.map(suggestion => `
             <div class="suggestion-item" data-lat="${suggestion.lat}" data-lon="${suggestion.lon}">
                 ${suggestion.displayName}
             </div>
         `).join('');
 
-        // Add click event listeners for each suggestion
         suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
             item.addEventListener('click', function () {
                 const lat = item.getAttribute('data-lat');
                 const lon = item.getAttribute('data-lon');
 
-                // Set the flag to false since this is a suggestion-based selection
                 this._searchInitiatedManually = false;
 
-                // Call _flyToLocation or the actual flyTo function
-                this._flyToLocation(lat, lon); // Ensure the map moves to the selected suggestion's location
+                this._flyToLocation(lat, lon);
 
-                // Clear suggestions
                 suggestionsContainer.innerHTML = '';
                 suggestionsContainer.style.display = 'none';
 
-                // Show a success message without the query
                 showMessage('Location found', 'success');
-            }.bind(this)); // Explicitly bind 'this' to the class instance
+            }.bind(this));
         });
 
-        // Make sure to display the suggestions container
         suggestionsContainer.style.display = 'block';
     }
 
