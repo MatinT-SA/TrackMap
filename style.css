@@ -523,6 +523,7 @@ body {
     border-radius: 15px 15px 40px 40px;
     box-shadow: 0 1px 10px 6px rgb(8, 82, 8);
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6);
+    text-align: center;
 }
 
 .message-container-success.show {
