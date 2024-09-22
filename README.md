@@ -1,3 +1,4 @@
-A fully responsive map application for tracking your activities based on your current location. (development phase)
+A fully responsive map application for tracking your activities based on your current location and any other location that you want using multiple APIs such Big Data Cloud, OpenCage Data, nominatim (openStreetMap)
 
-![trackMap](https://github.com/user-attachments/assets/2a5ff218-c259-4832-9dad-df3d27c8528c)
+![TrackMap-2](https://github.com/user-attachments/assets/bda9014a-0c8e-4931-bbcc-1f08974a3c78)
+
