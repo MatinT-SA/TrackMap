@@ -99,6 +99,7 @@ class App {
         searchBox.addEventListener('keydown', this._handleKeyDown.bind(this));
 
         searchBox.addEventListener('input', async () => {
+            info.style.borderRadius = '1rem 1rem 0 0';
             const query = searchBox.value.trim();
             if (query) {
                 const suggestions = await this._fetchSuggestions(query);
@@ -261,6 +262,7 @@ class App {
             hideLoader();
             setTimeout(() => {
                 suggestionsContainer.style.display = 'none';
+                info.style.borderRadius = '1rem';
             }, 4000);
         }
     }
