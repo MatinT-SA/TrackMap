@@ -952,9 +952,3 @@ body {
         font-size: 1.3rem;
     }
 }
-
-@media (max-height: 600px) {
-    #info {
-        min-height: 70% !important;
-    }
-}
