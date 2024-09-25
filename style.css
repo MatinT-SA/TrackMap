@@ -955,6 +955,6 @@ body {
 
 @media (max-height: 600px) {
     #info {
-        height: 70%;
+        min-height: 70%;
     }
 }
